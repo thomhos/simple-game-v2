@@ -1,60 +1,13 @@
-import { GameState, InputSystem, UpdateFn, RenderFn, GameEvent, GameEventEmitter, GameEventHandler } from '../types';
+import { GameState, InputSystem, UpdateFn, RenderFn } from '../types';
 
-export function createEventEmitter(): GameEventEmitter {
-    const listeners: Record<GameEvent, GameEventHandler[]> = {
-        start: [],
-        stop: [],
-        pause: [],
-        resume: [],
-        stateChanged: [],
-    };
-
-    return {
-        on: <T>(event: GameEvent, handler: GameEventHandler<T>) => {
-            listeners[event].push(handler);
-
-            // Return unsubscribe function
-            return () => {
-                const index = listeners[event].indexOf(handler);
-                if (index > -1) {
-                    listeners[event].splice(index, 1);
-                }
-            };
-        },
-
-        emit: <T>(event: GameEvent, data?: T) => {
-            listeners[event].forEach((handler) => handler(data));
-        },
-
-        off: (event: GameEvent, handler: GameEventHandler) => {
-            const index = listeners[event].indexOf(handler);
-            if (index > -1) {
-                listeners[event].splice(index, 1);
-            }
-        },
-    };
-}
-
-export function createInitialState(): GameState {
-    return {
-        map: {
-            availableMaps: [],
-            activeMap: '',
-        },
-        player: {
-            x: 400,
-            y: 300,
-            width: 32,
-            height: 32,
-        },
-    };
-}
+import { createEventEmitter } from './create-event-emitter';
+import { createInitialState } from './create-initial-state';
 
 export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D, update: UpdateFn, render: RenderFn) {
     let state: GameState;
     let lastTime = 0;
-    let accumulator = 0;
-    let animationId: number | null = null;
+    let accumulator = 0; //
+    let animationId: number | null = null; // Used to clean up the game on stop
     let isPaused = false;
 
     const FIXED_TIMESTEP = 1000 / 60; // 16.67ms for 60fps
@@ -69,6 +22,8 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D, up
         const deltaTime = currentTime - lastTime;
         lastTime = currentTime;
         accumulator += deltaTime;
+
+        console.log('running');
 
         // Fixed timestep updates
         while (accumulator >= FIXED_TIMESTEP) {
@@ -98,8 +53,8 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D, up
         getState: () => state,
         isPaused: () => isPaused,
 
-        start: (initialState: GameState) => {
-            state = initialState;
+        start: (initialState?: GameState) => {
+            state = initialState || createInitialState();
             lastTime = 0;
             accumulator = 0;
             isPaused = false;

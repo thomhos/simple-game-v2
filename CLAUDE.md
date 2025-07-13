@@ -7,6 +7,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Development server**: `npm run dev` (starts Vite dev server on port 3000)
 - **Build for production**: `npm run build` (outputs to `dist/` directory)  
 - **Preview production build**: `npm run preview`
+- **Format code**: `npm run format` (formats code with Prettier)
+- **Check formatting**: `npm run format:check` (checks if code is properly formatted)
 
 ## Architecture Overview
 
@@ -23,11 +25,27 @@ The game uses a **functional game loop** with immutable state management:
 
 ### Key Components
 
-- **Canvas system** (`src/game/canvas.ts`): Canvas creation and context management
-- **Input system** (`src/game/input.ts`): Keyboard input handling with immutable state
-- **Event system** (`src/game/game-events.ts`): Game lifecycle event emitter (start, stop, pause, resume)
-- **Update function** (`src/update.ts`): Core game logic that transforms state each frame
+- **Canvas system** (`src/canvas.ts`): Canvas creation and context management
+- **Input system** (`src/input/`): Modular keyboard input handling with immutable state
+  - `create-input.ts`: Creates input system with keyboard event handlers
+  - `create-actions.ts`: Maps input state to game actions (movement, etc.)
+  - `apply-actions.ts`: Applies actions to game state (player movement with bounds checking)
+- **Game system** (`src/game/`): Modular game engine components
+  - `create-event-emitter.ts`: Event system for game lifecycle events
+  - `create-game.ts`: Core game loop with fixed timestep and pause/resume functionality
+  - `create-initial-state.ts`: Factory for initial game state
+- **Update function** (`src/update.ts`): Core game logic that transforms state each frame using functional composition
 - **Render function** (`src/render.ts`): Renders current game state to canvas
+- **Utilities** (`src/utils/functions.ts`): Functional utilities like `pipe` for composition
+
+### Current Game Features
+
+- **Player Movement**: Blue square controlled with WASD or arrow keys at 200 pixels/second
+- **Boundary Checking**: Player stays within 800x600 canvas bounds
+- **Fixed Timestep**: 60fps game loop with accumulator for consistent physics
+- **Debug Display**: Shows player coordinates and controls on screen
+- **Event System**: Emits game lifecycle events with console logging
+- **Window Focus Management**: Automatically pauses when window loses focus, resumes when focused
 
 ### State Management Pattern
 
@@ -37,7 +55,14 @@ type UpdateFn = (state: GameState, input: InputState, deltaTime: number) => Game
 type RenderFn = (ctx: CanvasRenderingContext2D, state: GameState) => void
 ```
 
-All state changes must return new state objects rather than mutating existing ones.
+All state changes must return new state objects rather than mutating existing ones. Updates use functional composition with the `pipe` utility.
+
+### Input System Architecture
+
+The input system is modular and functional:
+1. **Input State**: Immutable set of currently pressed keys
+2. **Action Creation**: Maps input state to typed game actions
+3. **Action Application**: Pure functions that apply actions to game state
 
 ### Tilemap System
 
@@ -45,12 +70,47 @@ The codebase includes type definitions for a 2D tilemap system:
 - **TileConfig**: Defines tile properties (solid, trigger, etc.)
 - **MapConfig**: Complete map configuration with tileset and layers
 - **Character-based maps**: Maps use string arrays where each character represents a tile type
+- **Sample Map**: `src/assets/map.json` contains a Level 1 with walls, water, trees, and spawn points
 
-### Project Structure Notes
+### Project Structure
+
+```
+src/
+├── main.ts              # Entry point with window focus handling
+├── canvas.ts            # Canvas utilities
+├── update.ts            # Core game loop logic
+├── render.ts            # Rendering system
+├── game/
+│   ├── create-event-emitter.ts  # Event system implementation
+│   ├── create-game.ts           # Game engine with event system
+│   ├── create-initial-state.ts  # Initial state factory
+│   └── index.ts                 # Game exports
+├── input/
+│   ├── create-input.ts  # Input system creation
+│   ├── create-actions.ts # Input to action mapping
+│   ├── apply-actions.ts # Action application
+│   └── index.ts         # Input exports
+├── types/
+│   ├── game.ts          # Game state and map types
+│   ├── input.ts         # Input system types
+│   └── index.ts         # Type exports
+├── utils/
+│   ├── functions.ts     # Functional utilities
+│   └── index.ts         # Utility exports
+├── assets/
+│   └── map.json         # Sample tilemap data
+└── css/
+    ├── normalize.css    # CSS reset
+    └── styles.css       # Game styles
+```
+
+### Technical Notes
 
 - **Vite configuration**: Serves from `src/` directory, builds to `dist/`
 - **TypeScript**: Strict typing with separate type definitions in `src/types/`
 - **Functional architecture**: Emphasizes pure functions and immutable data
 - **Modular design**: Game systems are composed together rather than using class inheritance
+- **Canvas Size**: Currently hardcoded to 800x600 pixels
+- **Player Speed**: 200 pixels per second with deltaTime-based movement
 
 The game loop is designed to be deterministic and easily testable due to the functional approach.

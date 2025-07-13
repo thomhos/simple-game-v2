@@ -8,37 +8,40 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D, up
     let lastTime = 0;
     let accumulator = 0; //
     let animationId: number | null = null; // Used to clean up the game on stop
-    let isPaused = false;
 
     const FIXED_TIMESTEP = 1000 / 60; // 16.67ms for 60fps
     const events = createEventEmitter();
 
     const loop = (currentTime: number) => {
-        if (isPaused) {
-            animationId = requestAnimationFrame(loop);
-            return;
-        }
-
         const deltaTime = currentTime - lastTime;
         lastTime = currentTime;
-        accumulator += deltaTime;
+        
+        // Always process input (including pause toggle)
+        const previousState = state;
+        state = update(state, input.getState(), FIXED_TIMESTEP);
+        
+        // Clear pressed keys after processing input
+        input.clearPressed();
+        
+        // Emit state change event if state actually changed
+        if (state !== previousState) {
+            events.emit('stateChanged', {
+                previousState,
+                currentState: state,
+            });
+        }
 
-        console.log('running');
+        // Only accumulate time and run game logic if not paused
+        if (state.gameMode !== 'paused') {
+            accumulator += deltaTime;
+            console.log('running');
 
-        // Fixed timestep updates
-        while (accumulator >= FIXED_TIMESTEP) {
-            const previousState = state;
-            state = update(state, input.getState(), FIXED_TIMESTEP);
-
-            // Emit state change event if state actually changed
-            if (state !== previousState) {
-                events.emit('stateChanged', {
-                    previousState,
-                    currentState: state,
-                });
+            // Fixed timestep updates for game logic (but not input processing)
+            while (accumulator >= FIXED_TIMESTEP) {
+                // Game logic updates would go here in the future
+                // For now, input processing happens above regardless of pause state
+                accumulator -= FIXED_TIMESTEP;
             }
-
-            accumulator -= FIXED_TIMESTEP;
         }
 
         render(ctx, state);
@@ -51,27 +54,26 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D, up
         emit: events.emit,
 
         getState: () => state,
-        isPaused: () => isPaused,
+        isPaused: () => state.gameMode === 'paused',
 
         start: (initialState?: GameState) => {
             state = initialState || createInitialState();
             lastTime = 0;
             accumulator = 0;
-            isPaused = false;
 
             input.start();
             events.emit('start', { state });
             loop(0);
         },
         pause: () => {
-            if (!isPaused) {
-                isPaused = true;
+            if (state.gameMode !== 'paused') {
+                state = { ...state, gameMode: 'paused' };
                 events.emit('pause', { state });
             }
         },
         resume: () => {
-            if (isPaused) {
-                isPaused = false;
+            if (state.gameMode === 'paused') {
+                state = { ...state, gameMode: 'playing' };
                 lastTime = performance.now();
                 events.emit('resume', { state });
             }
@@ -82,7 +84,6 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D, up
                 animationId = null;
             }
 
-            isPaused = false;
             events.emit('stop', { state });
 
             if (cleanup) {

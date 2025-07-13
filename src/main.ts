@@ -28,3 +28,12 @@ game.on('stop', () => {
 
 // Start without initialState, but maybe later we need to provide some
 game.start();
+
+// Pause game when window loses focus, resume when it gains focus
+// window.addEventListener('blur', () => {
+//     game.pause();
+// });
+
+// window.addEventListener('focus', () => {
+//     game.resume();
+// });

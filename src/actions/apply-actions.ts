@@ -1,15 +1,22 @@
-import { GameState, InputAction } from '../types';
+import { GameState, GameAction } from '../types';
 
 const PLAYER_SPEED = 200; // pixels per second
 
-export function applyInputAction(state: GameState, inputAction: InputAction, deltaTime: number = 16.67): GameState {
-    switch (inputAction.type) {
+export function applyGameAction(state: GameState, action: GameAction, deltaTime: number = 16.67): GameState {
+    switch (action.type) {
+        case 'PAUSE_TOGGLE': {
+            const newGameMode = state.gameMode === 'paused' ? 'playing' : 'paused';
+            return {
+                ...state,
+                gameMode: newGameMode,
+            };
+        }
         case 'MOVE_PLAYER': {
             const moveDistance = (PLAYER_SPEED * deltaTime) / 1000;
             let newX = state.player.x;
             let newY = state.player.y;
 
-            switch (inputAction.direction) {
+            switch (action.direction) {
                 case 'up':
                     newY -= moveDistance;
                     break;

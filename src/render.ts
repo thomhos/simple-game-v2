@@ -21,4 +21,18 @@ export const render = (ctx: CanvasRenderingContext2D, state: GameState): void =>
     ctx.font = '16px Arial';
     ctx.fillText(`Player: (${Math.round(state.player.x)}, ${Math.round(state.player.y)})`, 10, 30);
     ctx.fillText('Use arrow keys or WASD to move', 10, 50);
+    ctx.fillText('Press Escape to pause/resume', 10, 70);
+    
+    // Show pause overlay
+    if (state.gameMode === 'paused') {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '32px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('PAUSED', ctx.canvas.width / 2, ctx.canvas.height / 2);
+        ctx.fillText('Press Escape to resume', ctx.canvas.width / 2, ctx.canvas.height / 2 + 40);
+        ctx.textAlign = 'left'; // Reset alignment
+    }
 };

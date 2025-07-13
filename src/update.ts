@@ -1,11 +1,15 @@
 import { GameState, InputState } from './types';
-import { applyInputAction, getInputAction } from './input';
+import { applyGameAction, mapInputToActions } from './actions';
 import { pipe } from './utils';
 
 export const update = (state: GameState, input: InputState, deltaTime: number): GameState => {
+    // Map input to actions based on current game state
+    const actions = mapInputToActions(input, state);
+
     return pipe(
         state,
-        (s) => applyInputAction(s, getInputAction(s, input), deltaTime)
+        // Apply all actions
+        (s) => actions.reduce((acc, action) => applyGameAction(acc, action, deltaTime), s)
         // (s) => updateCutscene(s, deltaTime),
         // (s) => updateAnimations(s, deltaTime)
     );

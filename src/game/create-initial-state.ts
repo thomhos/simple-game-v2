@@ -2,6 +2,7 @@ import { GameState } from '../types';
 
 export function createInitialState(): GameState {
     return {
+        gameMode: 'playing',
         map: {
             availableMaps: [],
             activeMap: '',

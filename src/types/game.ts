@@ -40,6 +40,7 @@ export interface PlayerState {
 }
 
 export interface GameState {
+    readonly gameMode: 'playing' | 'paused' | 'inventory' | 'dialogue';
     readonly map: {
         readonly availableMaps: string[];
         readonly activeMap: string;

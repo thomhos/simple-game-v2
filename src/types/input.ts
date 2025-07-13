@@ -2,11 +2,11 @@ export interface InputSystem {
     start: () => void;
     stop: () => void;
     getState: () => InputState;
-    // on: () => {}
+    clearPressed: () => void;
 }
 
 export interface InputState {
-    readonly keys: ReadonlySet<string>;
+    readonly keysHeld: ReadonlySet<string>; // Keys currently being held down
+    readonly keysPressed: ReadonlySet<string>; // Keys that were just pressed this frame
+    readonly keyOrder: readonly string[]; // Order in which keys were pressed (most recent last)
 }
-
-export type InputAction = { type: 'MOVE_PLAYER'; direction: 'up' | 'down' | 'left' | 'right' } | { type: 'STOP_PLAYER' } | { type: 'NO_ACTION' };

@@ -1,2 +1,3 @@
 export * from './input-action-mapper';
-export * from './apply-actions';
+export * from './game-actions';
+export * from './player-actions';

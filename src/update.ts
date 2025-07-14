@@ -1,5 +1,5 @@
 import { GameState, InputState } from './types';
-import { applyGameAction, mapInputToActions } from './actions';
+import { applyGameActions, applyPlayerActions, mapInputToActions } from './actions';
 import { pipe } from './utils';
 
 export const update = (state: GameState, input: InputState, deltaTime: number): GameState => {
@@ -9,7 +9,8 @@ export const update = (state: GameState, input: InputState, deltaTime: number): 
     return pipe(
         state,
         // Apply all actions
-        (s) => actions.reduce((acc, action) => applyGameAction(acc, action, deltaTime), s)
+        (s) => actions.reduce((acc, action) => applyGameActions(acc, action, deltaTime), s),
+        (s) => actions.reduce((acc, action) => applyPlayerActions(acc, action, deltaTime), s)
         // (s) => updateCutscene(s, deltaTime),
         // (s) => updateAnimations(s, deltaTime)
     );

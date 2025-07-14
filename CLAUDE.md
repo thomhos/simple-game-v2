@@ -30,7 +30,8 @@ The game uses a **functional game loop** with immutable state management:
 - **Input system** (`src/input.ts`): Consolidated keyboard input handling with immutable state
 - **Actions system** (`src/actions/`): Modular action processing
   - `input-action-mapper.ts`: Maps input state to game actions (movement, etc.)
-  - `apply-actions.ts`: Applies actions to game state (player movement with bounds checking)
+  - `game-actions.ts`: Applies game-level actions (pause/resume)
+  - `player-actions.ts`: Applies player-specific actions (movement with bounds checking)
 - **Game system** (`src/game/`): Modular game engine components
   - `create-event-emitter.ts`: Event system for game lifecycle events
   - `create-game.ts`: Core game loop with fixed timestep and pause/resume functionality
@@ -63,7 +64,9 @@ All state changes must return new state objects rather than mutating existing on
 The input and actions systems work together functionally:
 1. **Input State**: Immutable set of currently pressed keys (`src/input.ts`)
 2. **Action Creation**: Maps input state to typed game actions (`src/actions/input-action-mapper.ts`)
-3. **Action Application**: Pure functions that apply actions to game state (`src/actions/apply-actions.ts`)
+3. **Action Application**: Pure functions that apply actions to game state:
+   - `src/actions/game-actions.ts`: Game-level actions (pause/resume)
+   - `src/actions/player-actions.ts`: Player-specific actions (movement)
 4. **Action Types**: Type definitions for all game actions (`src/types/actions.ts`)
 
 ### Tilemap System
@@ -86,7 +89,8 @@ src/
 ├── render.ts            # Rendering system
 ├── actions/
 │   ├── input-action-mapper.ts  # Maps input to game actions
-│   ├── apply-actions.ts        # Applies actions to game state
+│   ├── game-actions.ts         # Applies game-level actions
+│   ├── player-actions.ts       # Applies player-specific actions
 │   └── index.ts                # Actions exports
 ├── game/
 │   ├── create-event-emitter.ts  # Event system implementation

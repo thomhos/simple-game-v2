@@ -1,7 +1,9 @@
+export type PlayerDirections = 'up' | 'down' | 'left' | 'right';
+
 export type GameAction =
     | {
           type: 'MOVE_PLAYER';
-          direction: 'up' | 'down' | 'left' | 'right';
+          direction: PlayerDirections;
       }
-    | { type: 'STOP_PLAYER' }
-    | { type: 'PAUSE_TOGGLE' };
+    | { type: 'PAUSE_GAME' }
+    | { type: 'RESUME_GAME' };

@@ -6,7 +6,6 @@ export interface InputSystem {
 }
 
 export interface InputState {
-    readonly keysHeld: ReadonlySet<string>; // Keys currently being held down
-    readonly keysPressed: ReadonlySet<string>; // Keys that were just pressed this frame
-    readonly keyOrder: readonly string[]; // Order in which keys were pressed (most recent last)
+    readonly keysHeld: readonly string[]; // Keys currently being held down (ordered by press time, most recent last)
+    readonly keysPressed: readonly string[]; // Keys that were just pressed this frame
 }

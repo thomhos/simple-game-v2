@@ -19,6 +19,7 @@ This is a TypeScript 2D game built with functional programming principles and a 
 The game uses a **functional game loop** with immutable state management:
 
 - **Entry point** (`src/main.ts`): Initializes the game system, creates canvas, input system, and starts the game loop
+- **HTML template** (`src/index.html`): Base HTML structure for the game canvas
 - **Game engine** (`src/game/game.ts`): Manages the core game loop with `requestAnimationFrame`, handles start/stop/pause/resume lifecycle
 - **State management**: Purely functional - `UpdateFn` takes current state and returns new state, never mutating existing state
 - **Rendering**: Separate `RenderFn` that takes state and renders to canvas context
@@ -26,9 +27,9 @@ The game uses a **functional game loop** with immutable state management:
 ### Key Components
 
 - **Canvas system** (`src/canvas.ts`): Canvas creation and context management
-- **Input system** (`src/input/`): Modular keyboard input handling with immutable state
-  - `create-input.ts`: Creates input system with keyboard event handlers
-  - `create-actions.ts`: Maps input state to game actions (movement, etc.)
+- **Input system** (`src/input.ts`): Consolidated keyboard input handling with immutable state
+- **Actions system** (`src/actions/`): Modular action processing
+  - `input-action-mapper.ts`: Maps input state to game actions (movement, etc.)
   - `apply-actions.ts`: Applies actions to game state (player movement with bounds checking)
 - **Game system** (`src/game/`): Modular game engine components
   - `create-event-emitter.ts`: Event system for game lifecycle events
@@ -45,7 +46,7 @@ The game uses a **functional game loop** with immutable state management:
 - **Fixed Timestep**: 60fps game loop with accumulator for consistent physics
 - **Debug Display**: Shows player coordinates and controls on screen
 - **Event System**: Emits game lifecycle events with console logging
-- **Window Focus Management**: Automatically pauses when window loses focus, resumes when focused
+- **Pause/Resume Controls**: Manual pause/resume with Escape key (window focus handlers available but commented out)
 
 ### State Management Pattern
 
@@ -57,12 +58,13 @@ type RenderFn = (ctx: CanvasRenderingContext2D, state: GameState) => void
 
 All state changes must return new state objects rather than mutating existing ones. Updates use functional composition with the `pipe` utility.
 
-### Input System Architecture
+### Input and Actions System Architecture
 
-The input system is modular and functional:
-1. **Input State**: Immutable set of currently pressed keys
-2. **Action Creation**: Maps input state to typed game actions
-3. **Action Application**: Pure functions that apply actions to game state
+The input and actions systems work together functionally:
+1. **Input State**: Immutable set of currently pressed keys (`src/input.ts`)
+2. **Action Creation**: Maps input state to typed game actions (`src/actions/input-action-mapper.ts`)
+3. **Action Application**: Pure functions that apply actions to game state (`src/actions/apply-actions.ts`)
+4. **Action Types**: Type definitions for all game actions (`src/types/actions.ts`)
 
 ### Tilemap System
 
@@ -76,21 +78,23 @@ The codebase includes type definitions for a 2D tilemap system:
 
 ```
 src/
-├── main.ts              # Entry point with window focus handling
+├── index.html           # HTML template for the game
+├── main.ts              # Entry point with game initialization
 ├── canvas.ts            # Canvas utilities
+├── input.ts             # Consolidated input system
 ├── update.ts            # Core game loop logic
 ├── render.ts            # Rendering system
+├── actions/
+│   ├── input-action-mapper.ts  # Maps input to game actions
+│   ├── apply-actions.ts        # Applies actions to game state
+│   └── index.ts                # Actions exports
 ├── game/
 │   ├── create-event-emitter.ts  # Event system implementation
 │   ├── create-game.ts           # Game engine with event system
 │   ├── create-initial-state.ts  # Initial state factory
 │   └── index.ts                 # Game exports
-├── input/
-│   ├── create-input.ts  # Input system creation
-│   ├── create-actions.ts # Input to action mapping
-│   ├── apply-actions.ts # Action application
-│   └── index.ts         # Input exports
 ├── types/
+│   ├── actions.ts       # Action type definitions
 │   ├── game.ts          # Game state and map types
 │   ├── input.ts         # Input system types
 │   └── index.ts         # Type exports

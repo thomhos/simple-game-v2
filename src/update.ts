@@ -9,7 +9,7 @@ export const update = (state: GameState, input: InputState, deltaTime: number): 
     return pipe(
         state,
         // Apply all actions
-        (s) => actions.reduce((acc, action) => applyGameAction(acc, action, deltaTime), s)
+        (s): GameState => actions.reduce((acc, action) => applyGameAction(acc, action, deltaTime), s)
         // (s) => updateCutscene(s, deltaTime),
         // (s) => updateAnimations(s, deltaTime)
     );

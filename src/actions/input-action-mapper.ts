@@ -11,12 +11,6 @@ export function mapInputToActions(input: InputState, state: GameState): GameActi
         return actions; // Pause toggle takes priority
     }
 
-    // Only process other input if game is not paused
-    if (state.gameMode === 'paused') {
-        actions.push({ type: 'NO_ACTION' });
-        return actions;
-    }
-    
     // Only process movement actions if game is playing
     if (state.gameMode === 'playing') {
         // Find the most recently pressed movement key that's still held
@@ -42,11 +36,6 @@ export function mapInputToActions(input: InputState, state: GameState): GameActi
             // No movement keys held
             actions.push({ type: 'STOP_PLAYER' });
         }
-    }
-
-    // If no actions were added, add NO_ACTION
-    if (actions.length === 0) {
-        actions.push({ type: 'NO_ACTION' });
     }
 
     return actions;

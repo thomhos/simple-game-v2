@@ -45,7 +45,7 @@ export function applyGameAction(state: GameState, action: GameAction, deltaTime:
             };
         }
         case 'STOP_PLAYER':
-        case 'NO_ACTION':
+            return state;
         default:
             return state;
     }

@@ -3,7 +3,7 @@ import { InputState, InputSystem } from './types';
 export function createInputSystem(): InputSystem {
     let inputState: InputState = { keysHeld: new Set(), keysPressed: new Set(), keyOrder: [] };
 
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent): void => {
         // Ignore keys pressed with modifiers (CMD, CTRL, ALT, Shift) to prevent sticky keys
         if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) {
             return;
@@ -28,7 +28,7 @@ export function createInputSystem(): InputSystem {
         inputState = { keysHeld: newKeysHeld, keysPressed: newKeysPressed, keyOrder: newKeyOrder };
     };
 
-    const handleKeyUp = (e: KeyboardEvent) => {
+    const handleKeyUp = (e: KeyboardEvent): void => {
         // Always remove the key regardless of modifiers to prevent sticky keys
         const newKeysHeld = new Set(inputState.keysHeld);
         newKeysHeld.delete(e.key);
@@ -45,7 +45,7 @@ export function createInputSystem(): InputSystem {
     };
 
     // Clear all keys when window loses focus to prevent sticky keys
-    const handleBlur = () => {
+    const handleBlur = (): void => {
         inputState = { keysHeld: new Set(), keysPressed: new Set(), keyOrder: [] };
     };
 
@@ -56,18 +56,18 @@ export function createInputSystem(): InputSystem {
     };
 
     return {
-        start: () => {
+        start: (): void => {
             window.addEventListener('keydown', handleKeyDown);
             window.addEventListener('keyup', handleKeyUp);
             window.addEventListener('blur', handleBlur);
         },
-        stop: () => {
+        stop: (): void => {
             window.removeEventListener('keydown', handleKeyDown);
             window.removeEventListener('keyup', handleKeyUp);
             window.removeEventListener('blur', handleBlur);
         },
-        getState: () => inputState,
-        clearPressed: () => {
+        getState: (): InputState => inputState,
+        clearPressed: (): void => {
             inputState = { keysHeld: inputState.keysHeld, keysPressed: new Set(), keyOrder: inputState.keyOrder };
         },
     };

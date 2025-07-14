@@ -4,5 +4,4 @@ export type GameAction =
           direction: 'up' | 'down' | 'left' | 'right';
       }
     | { type: 'STOP_PLAYER' }
-    | { type: 'PAUSE_TOGGLE' }
-    | { type: 'NO_ACTION' };
+    | { type: 'PAUSE_TOGGLE' };

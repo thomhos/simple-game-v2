@@ -1,17 +1,17 @@
 import { GameState, SpriteMap } from '../types';
-// import playerSprite from '../assets/sprite/bob/config.json';
-import playerSprite from '../assets/sprite/adam/config.json';
+import playerSprite from '../assets/sprite/bob/config.json';
+// import playerSprite from '../assets/sprite/amelia/config.json';
 
-export function createInitialState(canvasWidth: number, canvasHeight: number): GameState {
+export function createInitialState(): GameState {
     return {
         gameMode: 'loading',
         gameTime: 0,
-        error: null,
         system: {
             canvas: {
-                width: canvasWidth,
-                height: canvasHeight,
+                width: 0,
+                height: 0,
             },
+            error: null,
         },
         sprites: {
             isLoaded: false,

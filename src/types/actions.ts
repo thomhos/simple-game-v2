@@ -19,4 +19,9 @@ export type GameAction =
           message: string;
           details?: string;
       }
-    | { type: 'RESOLVE_ERROR' };
+    | { type: 'RESOLVE_ERROR' }
+    | {
+          type: 'SET_CANVAS_SIZE';
+          width: number;
+          height: number;
+      };

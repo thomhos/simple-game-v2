@@ -9,6 +9,7 @@ export interface SystemConfig {
         readonly width: number;
         readonly height: number;
     };
+    readonly error: GameError | null;
 }
 
 export interface GameState {
@@ -21,7 +22,6 @@ export interface GameState {
         readonly activeMap: string;
     };
     readonly player: PlayerState;
-    readonly error: GameError | null;
 }
 
 export interface GameError {

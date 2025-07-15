@@ -44,12 +44,13 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
         getState: (): GameState => state,
 
         start: async (initialState?: Partial<GameState>): Promise<void> => {
-            state = { ...createInitialState(ctx.canvas.width, ctx.canvas.height), ...initialState };
+            state = { ...createInitialState(), ...initialState };
             lastTime = 0;
             accumulatedTime = 0;
 
             // Always start loading sprites, regardless of initial state
-            state = applySystemAction(state, { type: 'START_LOADING' }, 0);
+            state = applySystemAction(state, { type: 'START_LOADING' }, FIXED_TIMESTEP);
+            state = applySystemAction(state, { type: 'SET_CANVAS_SIZE', width: ctx.canvas.width, height: ctx.canvas.height }, FIXED_TIMESTEP);
 
             // Start listening to input
             input.start();
@@ -60,7 +61,7 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
             try {
                 const loadedSprites = await loadSpritesFromMap(state.sprites.spriteMap);
                 // Dispatch SPRITES_LOADED action to transition to playing mode
-                state = applySystemAction(state, { type: 'SPRITES_LOADED', loadedSprites }, 0);
+                state = applySystemAction(state, { type: 'SPRITES_LOADED', loadedSprites }, FIXED_TIMESTEP);
             } catch (error) {
                 console.error('Failed to load sprites:', error);
                 // Dispatch error action to show error page

@@ -38,16 +38,34 @@ export function applySystemAction(state: GameState, action: GameAction, _fixedTi
         case 'THROW_ERROR': {
             return {
                 ...state,
-                error: {
-                    message: action.message,
-                    details: action.details,
+                system: {
+                    ...state.system,
+                    error: {
+                        message: action.message,
+                        details: action.details,
+                    },
                 },
             };
         }
         case 'RESOLVE_ERROR': {
             return {
                 ...state,
-                error: null,
+                system: {
+                    ...state.system,
+                    error: null,
+                },
+            };
+        }
+        case 'SET_CANVAS_SIZE': {
+            return {
+                ...state,
+                system: {
+                    ...state.system,
+                    canvas: {
+                        width: action.width,
+                        height: action.height,
+                    },
+                },
             };
         }
         default:

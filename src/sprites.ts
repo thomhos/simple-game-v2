@@ -55,7 +55,13 @@ export function drawPlayer(ctx: CanvasRenderingContext2D, state: GameState, load
     const spriteName = state.player.sprites[playerAnimation];
     const spriteConfig = state.sprites.spriteMap[spriteName];
 
-    const currentFrame = getCurrentFrame(state.gameTime, state.player.spriteAnimationState.animationStartTime, spriteConfig.frameDuration, spriteConfig.frames, spriteConfig.loop);
+    const currentFrame = getCurrentFrame(
+        state.gameTime,
+        state.player.spriteAnimationState.animationStartTime,
+        spriteConfig.frameDuration,
+        spriteConfig.frames,
+        spriteConfig.loop
+    );
 
     drawSprite(ctx, spriteConfig, loadedSprites, currentFrame, state.player.x, state.player.y, state.player.width, state.player.height);
 }

@@ -1,6 +1,7 @@
-import { GameState } from '../types';
+import { RenderContext } from './canvas-helpers';
 
-export function drawSpeechBubble(ctx: CanvasRenderingContext2D, state: GameState): void {
+export function drawSpeechBubble(renderCtx: RenderContext): RenderContext {
+    const { ctx, state } = renderCtx;
     const player = state.player;
     const bubbleWidth = 30;
     const bubbleHeight = 25;
@@ -33,4 +34,6 @@ export function drawSpeechBubble(ctx: CanvasRenderingContext2D, state: GameState
     ctx.textAlign = 'center';
     ctx.fillText('!', bubbleX + bubbleWidth / 2, bubbleY + bubbleHeight - 5);
     ctx.textAlign = 'left'; // Reset alignment
+
+    return renderCtx;
 }

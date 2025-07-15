@@ -3,7 +3,7 @@ export function createCanvas(id: string, width: number, height: number): CanvasR
     if (!canvas) {
         throw new Error(`Canvas element with id "${id}" not found`);
     }
-    
+
     const ctx = canvas.getContext('2d');
     if (!ctx) {
         throw new Error('Failed to get 2D rendering context from canvas');

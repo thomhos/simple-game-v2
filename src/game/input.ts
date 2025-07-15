@@ -1,4 +1,4 @@
-import { InputState, InputSystem } from './types';
+import { InputState, InputSystem } from '../types';
 
 // Helper function to identify game keys
 export const isGameKey = (key: string): boolean => {

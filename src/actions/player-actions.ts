@@ -1,35 +1,42 @@
 import { GameState, GameAction } from '../types';
 // import { updateAnimation, getAnimationDirection } from '../sprites';
 
-const PLAYER_SPEED = 100; // pixels per second
+export function applyPlayerAction(state: GameState, action: GameAction, _fixedTimeStep: number): GameState {
+    const PLAYER_MOVEMENT_PER_FRAME = 1.6; // pixels per frame
 
-export function applyPlayerAction(state: GameState, action: GameAction, deltaTime: number): GameState {
     switch (action.type) {
         case 'MOVE_PLAYER': {
-            const moveDistance = (PLAYER_SPEED * deltaTime) / 1000;
+            const moveDistance = PLAYER_MOVEMENT_PER_FRAME;
             let newX = state.player.x;
             let newY = state.player.y;
-            let dx = 0;
-            let dy = 0;
+            let facingDirection = state.player.facingDirection;
+            // let dx = 0;
+            // let dy = 0;
 
             switch (action.direction) {
                 case 'up':
+                    facingDirection = 'up';
                     newY -= moveDistance;
-                    dy = -1;
+                    // dy = -1;
                     break;
                 case 'down':
+                    facingDirection = 'down';
                     newY += moveDistance;
-                    dy = 1;
+                    // dy = 1;
                     break;
                 case 'left':
+                    facingDirection = 'left';
                     newX -= moveDistance;
-                    dx = -1;
+                    // dx = -1;
                     break;
                 case 'right':
+                    facingDirection = 'right';
                     newX += moveDistance;
-                    dx = 1;
+                    // dx = 1;
                     break;
             }
+
+            console.log(facingDirection);
 
             // Keep player within canvas bounds (assuming 800x600 canvas)
             newX = Math.max(0, Math.min(800 - state.player.width, newX));
@@ -41,6 +48,7 @@ export function applyPlayerAction(state: GameState, action: GameAction, deltaTim
                     ...state.player,
                     x: newX,
                     y: newY,
+                    facingDirection,
                     // spriteState: updatedSpriteState,
                 },
             };

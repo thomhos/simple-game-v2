@@ -21,7 +21,7 @@ export interface GameError {
     readonly details?: string;
 }
 
-export type UpdateFn = (state: GameState, input: InputState, deltaTime: number) => GameState;
+export type UpdateFn = (state: GameState, input: InputState, fixedTimeStep: number) => GameState;
 export type RenderFn = (ctx: CanvasRenderingContext2D, state: GameState) => void;
 
 export type GameEvent = 'start' | 'stop' | 'pause' | 'resume' | 'stateChanged';
@@ -67,6 +67,8 @@ export interface MapState {
 
 // PLAYER
 export type PlayerAnimationNames = 'idle' | 'walk-up' | 'walk-down' | 'walk-left' | 'walk-right';
+export type PlayerDirections = 'up' | 'down' | 'left' | 'right';
+export type PlayerMovementStates = 'idle' | 'walk';
 
 export type PlayerSpriteMap = { [Property in PlayerAnimationNames]: SpriteNames };
 
@@ -75,6 +77,8 @@ export interface PlayerState {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly facingDirection: PlayerDirections;
+    readonly movementState: PlayerMovementStates;
     readonly sprites: PlayerSpriteMap;
     readonly spriteAnimationState: {
         readonly currentAnimation: PlayerAnimationNames;

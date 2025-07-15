@@ -1,6 +1,6 @@
 import { GameState, GameAction } from '../types';
 
-export function applySystemAction(state: GameState, action: GameAction, _deltaTime: number): GameState {
+export function applySystemAction(state: GameState, action: GameAction, _fixedTimeStep: number): GameState {
     switch (action.type) {
         case 'PAUSE_GAME': {
             return {

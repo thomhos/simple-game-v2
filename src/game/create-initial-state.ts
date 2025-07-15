@@ -75,6 +75,8 @@ export function createInitialState(): GameState {
             y: 300,
             width: 16,
             height: 32,
+            facingDirection: 'down',
+            movementState: 'idle',
             sprites: {
                 idle: 'player-idle',
                 'walk-up': 'player-walk-up',

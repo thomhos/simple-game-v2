@@ -1,6 +1,5 @@
-export type PlayerDirections = 'up' | 'down' | 'left' | 'right';
-
 import { LoadedSprites } from './sprites';
+import { PlayerDirections } from './game';
 
 export type GameAction =
     | {

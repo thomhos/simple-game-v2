@@ -4,9 +4,17 @@ import { SpriteState, SpriteNames } from './sprites';
 // GAME
 export type GameModes = 'loading' | 'playing' | 'paused' | 'error';
 
+export interface SystemConfig {
+    readonly canvas: {
+        readonly width: number;
+        readonly height: number;
+    };
+}
+
 export interface GameState {
     readonly gameMode: GameModes;
     readonly gameTime: number;
+    readonly system: SystemConfig;
     readonly sprites: SpriteState;
     readonly map: {
         readonly availableMaps: string[];
@@ -66,7 +74,7 @@ export interface MapState {
 }
 
 // PLAYER
-export type PlayerAnimationNames = 'idle' | 'walk-up' | 'walk-down' | 'walk-left' | 'walk-right';
+export type PlayerAnimationNames = 'idle-up' | 'idle-down' | 'idle-left' | 'idle-right' | 'walk-up' | 'walk-down' | 'walk-left' | 'walk-right';
 export type PlayerDirections = 'up' | 'down' | 'left' | 'right';
 export type PlayerMovementStates = 'idle' | 'walk';
 
@@ -77,8 +85,10 @@ export interface PlayerState {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly speed: number;
     readonly facingDirection: PlayerDirections;
     readonly movementState: PlayerMovementStates;
+    readonly lastMovementTime: number;
     readonly sprites: PlayerSpriteMap;
     readonly spriteAnimationState: {
         readonly currentAnimation: PlayerAnimationNames;

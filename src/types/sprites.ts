@@ -6,7 +6,7 @@ export interface SpriteState {
 }
 
 export type SpriteMap = { [Property in SpriteNames]: SpriteConfig };
-export type SpriteNames = 'player-idle' | 'player-walk-up' | 'player-walk-down' | 'player-walk-left' | 'player-walk-right';
+export type SpriteNames = 'player-idle-up' | 'player-idle-down' | 'player-idle-left' | 'player-idle-right' | 'player-walk-up' | 'player-walk-down' | 'player-walk-left' | 'player-walk-right';
 
 export interface SpriteConfig {
     readonly path: string;

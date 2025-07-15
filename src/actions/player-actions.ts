@@ -1,61 +1,79 @@
-import { GameState, GameAction } from '../types';
-// import { updateAnimation, getAnimationDirection } from '../sprites';
+import { GameState, GameAction, PlayerAnimationNames } from '../types';
 
 export function applyPlayerAction(state: GameState, action: GameAction, _fixedTimeStep: number): GameState {
-    const PLAYER_MOVEMENT_PER_FRAME = 1.6; // pixels per frame
-
     switch (action.type) {
         case 'MOVE_PLAYER': {
-            const moveDistance = PLAYER_MOVEMENT_PER_FRAME;
-            let newX = state.player.x;
-            let newY = state.player.y;
-            let facingDirection = state.player.facingDirection;
-            // let dx = 0;
-            // let dy = 0;
+            const { system, player } = state;
+            const moveDistance = player.speed;
+            const movementState = 'walk';
+
+            let newX = player.x;
+            let newY = player.y;
+            let facingDirection = player.facingDirection;
 
             switch (action.direction) {
                 case 'up':
                     facingDirection = 'up';
-                    newY -= moveDistance;
-                    // dy = -1;
+                    newY = newY - moveDistance >= 0 ? newY - moveDistance : 0;
                     break;
                 case 'down':
                     facingDirection = 'down';
-                    newY += moveDistance;
-                    // dy = 1;
+                    newY = newY + moveDistance <= system.canvas.height - player.height ? newY + moveDistance : system.canvas.height - player.height;
                     break;
                 case 'left':
                     facingDirection = 'left';
-                    newX -= moveDistance;
-                    // dx = -1;
+                    newX = newX - moveDistance >= 0 ? newX - moveDistance : 0;
                     break;
                 case 'right':
                     facingDirection = 'right';
-                    newX += moveDistance;
-                    // dx = 1;
+                    newX = newX + moveDistance <= system.canvas.width - player.width ? newX + moveDistance : system.canvas.width - player.width;
                     break;
             }
 
-            console.log(facingDirection);
+            // Check if player actually moved
+            const actuallyMoved = newX !== player.x || newY !== player.y;
+            const finalMovementState = actuallyMoved ? movementState : 'idle';
+            const currentAnimation = `${finalMovementState}-${facingDirection}` as PlayerAnimationNames;
 
-            // Keep player within canvas bounds (assuming 800x600 canvas)
-            newX = Math.max(0, Math.min(800 - state.player.width, newX));
-            newY = Math.max(0, Math.min(600 - state.player.height, newY));
+            return {
+                ...state,
+                player: {
+                    ...player,
+                    x: newX,
+                    y: newY,
+                    facingDirection,
+                    movementState: finalMovementState,
+                    lastMovementTime: state.gameTime,
+                    spriteAnimationState: {
+                        ...player.spriteAnimationState,
+                        currentAnimation,
+                    },
+                },
+            };
+        }
+        case 'STOP_PLAYER':
+            // set idle animation based on current facing direction
+            const movementState = 'idle';
+            const timeSinceLastMovement = state.gameTime - state.player.lastMovementTime;
+
+            // If idle for more than 5 seconds, default to idle-down
+            const shouldDefaultToDown = timeSinceLastMovement > 5000;
+            const facingDirection = shouldDefaultToDown ? 'down' : state.player.facingDirection;
+            const currentAnimation = `${movementState}-${facingDirection}` as PlayerAnimationNames;
 
             return {
                 ...state,
                 player: {
                     ...state.player,
-                    x: newX,
-                    y: newY,
                     facingDirection,
-                    // spriteState: updatedSpriteState,
+                    movementState,
+                    spriteAnimationState: {
+                        ...state.player.spriteAnimationState,
+                        currentAnimation,
+                        animationStartTime: 0,
+                    },
                 },
             };
-        }
-        case 'STOP_PLAYER':
-            // set idle animation
-            return state;
         default:
             return state;
     }

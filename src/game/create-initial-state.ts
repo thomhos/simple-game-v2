@@ -1,70 +1,22 @@
-import { GameState } from '../types';
+import { GameState, SpriteMap } from '../types';
+// import playerSprite from '../assets/sprite/bob/config.json';
+import playerSprite from '../assets/sprite/adam/config.json';
 
-export function createInitialState(): GameState {
+export function createInitialState(canvasWidth: number, canvasHeight: number): GameState {
     return {
         gameMode: 'loading',
         gameTime: 0,
         error: null,
+        system: {
+            canvas: {
+                width: canvasWidth,
+                height: canvasHeight,
+            },
+        },
         sprites: {
             isLoaded: false,
             loadedSprites: {},
-            spriteMap: {
-                'player-idle': {
-                    path: 'assets/sprite/player_16x16.png',
-                    frames: [
-                        { x: 0, y: 0, width: 16, height: 32 },
-                        { x: 16, y: 0, width: 16, height: 32 },
-                        { x: 32, y: 0, width: 16, height: 32 },
-                        { x: 48, y: 0, width: 16, height: 32 },
-                    ],
-                    frameDuration: 200,
-                    loop: true,
-                },
-                'player-walk-up': {
-                    path: 'assets/sprite/player_16x16.png',
-                    frames: [
-                        { x: 0, y: 0, width: 32, height: 32 },
-                        { x: 16, y: 0, width: 32, height: 32 },
-                        { x: 32, y: 0, width: 32, height: 32 },
-                        { x: 46, y: 0, width: 32, height: 32 },
-                    ],
-                    frameDuration: 200,
-                    loop: true,
-                },
-                'player-walk-down': {
-                    path: 'assets/sprite/player_16x16.png',
-                    frames: [
-                        { x: 0, y: 0, width: 32, height: 32 },
-                        { x: 32, y: 0, width: 32, height: 32 },
-                        { x: 64, y: 0, width: 32, height: 32 },
-                        { x: 32, y: 0, width: 32, height: 32 },
-                    ],
-                    frameDuration: 200,
-                    loop: true,
-                },
-                'player-walk-left': {
-                    path: 'assets/sprite/player_16x16.png',
-                    frames: [
-                        { x: 0, y: 0, width: 32, height: 32 },
-                        { x: 32, y: 0, width: 32, height: 32 },
-                        { x: 64, y: 0, width: 32, height: 32 },
-                        { x: 32, y: 0, width: 32, height: 32 },
-                    ],
-                    frameDuration: 200,
-                    loop: true,
-                },
-                'player-walk-right': {
-                    path: 'assets/sprite/player_16x16.png',
-                    frames: [
-                        { x: 0, y: 0, width: 32, height: 32 },
-                        { x: 32, y: 0, width: 32, height: 32 },
-                        { x: 64, y: 0, width: 32, height: 32 },
-                        { x: 32, y: 0, width: 32, height: 32 },
-                    ],
-                    frameDuration: 200,
-                    loop: true,
-                },
-            },
+            spriteMap: playerSprite as SpriteMap,
         },
         map: {
             availableMaps: [],
@@ -73,19 +25,24 @@ export function createInitialState(): GameState {
         player: {
             x: 400,
             y: 300,
-            width: 16,
-            height: 32,
+            width: 32,
+            height: 64,
+            speed: 2.6,
             facingDirection: 'down',
             movementState: 'idle',
+            lastMovementTime: 0,
             sprites: {
-                idle: 'player-idle',
+                'idle-up': 'player-idle-up',
+                'idle-down': 'player-idle-down',
+                'idle-left': 'player-idle-left',
+                'idle-right': 'player-idle-right',
                 'walk-up': 'player-walk-up',
                 'walk-down': 'player-walk-down',
                 'walk-left': 'player-walk-left',
                 'walk-right': 'player-walk-right',
             },
             spriteAnimationState: {
-                currentAnimation: 'idle',
+                currentAnimation: 'idle-down',
                 animationStartTime: 0,
                 currentFrame: 0,
                 frameTimer: 0,

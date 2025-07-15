@@ -44,7 +44,7 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
         getState: (): GameState => state,
 
         start: async (initialState?: Partial<GameState>): Promise<void> => {
-            state = { ...createInitialState(), ...initialState };
+            state = { ...createInitialState(ctx.canvas.width, ctx.canvas.height), ...initialState };
             lastTime = 0;
             accumulatedTime = 0;
 

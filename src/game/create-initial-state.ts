@@ -3,6 +3,7 @@ import { GameState } from '../types';
 export function createInitialState(): GameState {
     return {
         gameMode: 'loading',
+        gameTime: 0,
         error: null,
         sprites: {
             isLoaded: false,

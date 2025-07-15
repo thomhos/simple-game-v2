@@ -6,6 +6,7 @@ export type GameModes = 'loading' | 'playing' | 'paused' | 'error';
 
 export interface GameState {
     readonly gameMode: GameModes;
+    readonly gameTime: number;
     readonly sprites: SpriteState;
     readonly map: {
         readonly availableMaps: string[];
@@ -32,32 +33,32 @@ export interface GameEventEmitter {
 }
 
 // MAP
-export interface TileConfig {
-    name: string;
-    solid: boolean;
-    trigger?: boolean;
-}
+// export interface TileConfig {
+//     name: string;
+//     solid: boolean;
+//     trigger?: boolean;
+// }
 
-export interface TileSet {
-    [key: string]: TileConfig;
-}
+// export interface TileSet {
+//     [key: string]: TileConfig;
+// }
 
-export type TileLayerData = string[]; // ["####_____####"]
+// export type TileLayerData = string[]; // ["####_____####"]
 
-export interface TileLayerConfig {
-    background: TileLayerData;
-    foreground: TileLayerData;
-}
+// export interface TileLayerConfig {
+//     background: TileLayerData;
+//     foreground: TileLayerData;
+// }
 
-export interface MapConfig {
-    name: string;
-    width: number;
-    height: number;
-    tileWidth: number;
-    tileHeight: number;
-    tileSet: TileConfig;
-    layers: TileLayerConfig;
-}
+// export interface MapConfig {
+//     name: string;
+//     width: number;
+//     height: number;
+//     tileWidth: number;
+//     tileHeight: number;
+//     tileSet: TileConfig;
+//     layers: TileLayerConfig;
+// }
 
 export interface MapState {
     availableMaps: string[];

@@ -1,7 +1,7 @@
 import { GameState, GameAction } from '../types';
 // import { updateAnimation, getAnimationDirection } from '../sprites';
 
-const PLAYER_SPEED = 200; // pixels per second
+const PLAYER_SPEED = 100; // pixels per second
 
 export function applyPlayerAction(state: GameState, action: GameAction, deltaTime: number): GameState {
     switch (action.type) {
@@ -34,10 +34,6 @@ export function applyPlayerAction(state: GameState, action: GameAction, deltaTim
             // Keep player within canvas bounds (assuming 800x600 canvas)
             newX = Math.max(0, Math.min(800 - state.player.width, newX));
             newY = Math.max(0, Math.min(600 - state.player.height, newY));
-
-            // Update animation based on movement direction
-            // const newAnimation = getAnimationDirection(dx, dy);
-            // const updatedSpriteState = updateAnimation(state.player.spriteState, newAnimation);
 
             return {
                 ...state,

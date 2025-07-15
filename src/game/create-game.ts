@@ -1,17 +1,13 @@
-import { GameState } from '../types';
+import { GameState, InputSystem } from '../types';
 import { applySystemAction } from '../actions';
 
-import { createCanvas } from './canvas';
-import { createInputSystem } from './input';
 import { createEventEmitter } from './event-emitter';
 import { loadSpritesFromMap } from './sprite-loader';
 import { createInitialState } from './create-initial-state';
 import { update } from './update';
 import { render } from './render';
 
-export function createGame(canvasId: string, stageWidth: number, stageHeight: number) {
-    const ctx = createCanvas(canvasId, stageWidth, stageHeight);
-    const input = createInputSystem();
+export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
     const events = createEventEmitter();
 
     let state: GameState;
@@ -47,19 +43,24 @@ export function createGame(canvasId: string, stageWidth: number, stageHeight: nu
 
         getState: (): GameState => state,
 
-        start: async (initialState?: GameState): Promise<void> => {
-            state = initialState || createInitialState();
+        start: async (initialState?: Partial<GameState>): Promise<void> => {
+            state = { ...createInitialState(), ...initialState };
             lastTime = 0;
             accumulatedTime = 0;
 
             // Always start loading sprites, regardless of initial state
             state = applySystemAction(state, { type: 'START_LOADING' }, 0);
 
+            // Start listening to input
+            input.start();
+
+            events.emit('start', { state });
+            loop(0);
+
             try {
                 const loadedSprites = await loadSpritesFromMap(state.sprites.spriteMap);
                 // Dispatch SPRITES_LOADED action to transition to playing mode
                 state = applySystemAction(state, { type: 'SPRITES_LOADED', loadedSprites }, 0);
-                console.log(state);
             } catch (error) {
                 console.error('Failed to load sprites:', error);
                 // Dispatch error action to show error page
@@ -73,12 +74,6 @@ export function createGame(canvasId: string, stageWidth: number, stageHeight: nu
                     0
                 );
             }
-
-            // Start listening to input
-            input.start();
-
-            events.emit('start', { state });
-            loop(0);
         },
         pause: () => {
             if (state.gameMode !== 'paused') {

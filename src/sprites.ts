@@ -2,8 +2,8 @@ import { LoadedSprites } from './types';
 
 import { GameState, SpriteConfig, SpriteFrame } from './types';
 
-export function getCurrentFrame(animationStartTime: number, frameDuration: number, frames: SpriteFrame[], loop: boolean): number {
-    const elapsed = Date.now() - animationStartTime;
+export function getCurrentFrame(gameTime: number, animationStartTime: number, frameDuration: number, frames: SpriteFrame[], loop: boolean): number {
+    const elapsed = gameTime - animationStartTime;
     const frameIndex = Math.floor(elapsed / frameDuration);
 
     if (loop) {
@@ -55,7 +55,7 @@ export function drawPlayer(ctx: CanvasRenderingContext2D, state: GameState, load
     const spriteName = state.player.sprites[playerAnimation];
     const spriteConfig = state.sprites.spriteMap[spriteName];
 
-    const currentFrame = getCurrentFrame(state.player.spriteAnimationState.animationStartTime, spriteConfig.frameDuration, spriteConfig.frames, spriteConfig.loop);
+    const currentFrame = getCurrentFrame(state.gameTime, state.player.spriteAnimationState.animationStartTime, spriteConfig.frameDuration, spriteConfig.frames, spriteConfig.loop);
 
     drawSprite(ctx, spriteConfig, loadedSprites, currentFrame, state.player.x, state.player.y, state.player.width, state.player.height);
 }

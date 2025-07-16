@@ -42,6 +42,7 @@ export interface AssetState {
     isImagesLoaded: boolean;
 
     sprites: SpriteMap;
+    spriteImages: SpriteImageMap;
     isSpritesLoaded: boolean;
 }
 
@@ -66,6 +67,8 @@ export interface Image {
 export type SpriteNames = `${PlayerSkinNames}-${PlayerMovementTypes}-${PlayerDirections}`;
 export type SpriteMap = { [Property in SpriteNames]: Sprite };
 
+export type SpriteImageMap = { [Property in SpriteNames]: HTMLImageElement };
+
 export interface SpriteFrame {
     readonly x: number;
     readonly y: number;
@@ -75,9 +78,8 @@ export interface SpriteFrame {
 
 export interface Sprite {
     readonly path: string;
-    readonly image: HTMLImageElement;
-    readonly width: number;
-    readonly height: number;
+    // readonly width: number;
+    // readonly height: number;
     readonly frames: SpriteFrame[];
     readonly frameDuration: number;
     readonly loop: boolean;
@@ -88,22 +90,30 @@ export type SceneNames = 'loading' | 'menu' | 'intro' | 'stage-select' | 'playin
 
 export interface SceneState {
     currentScene: SceneNames;
-    nextScene: SceneNames;
-    localState: LocalSceneState;
+    nextScene: SceneNames | undefined;
+    localState: LocalSceneStateMap;
 
     isTransitioningIn: boolean;
     isTransitioningOut: boolean;
     transitionStartTime: number;
-    transitionProgress: number;
+    transitionDuration: number;
 }
 
-export type LocalSceneState =
-    | LoadingSceneState
-    | MenuSceneState
-    | IntroSceneState
-    | StageSelectSceneState
-    | PlayingSceneState
-    | CompleteSceneState;
+export type LocalSceneStateMap = {
+    [K in SceneNames]: K extends 'loading'
+        ? LoadingSceneState
+        : K extends 'menu'
+          ? MenuSceneState
+          : K extends 'intro'
+            ? IntroSceneState
+            : K extends 'stage-select'
+              ? StageSelectSceneState
+              : K extends 'playing'
+                ? PlayingSceneState
+                : K extends 'complete'
+                  ? CompleteSceneState
+                  : never;
+};
 
 export interface LoadingSceneState {
     loadingStartTime: number;
@@ -117,11 +127,10 @@ export interface MenuSceneState {
 
 export interface IntroSceneState {
     animationStartTime: number;
-    animationProgress: number;
 }
 
 export interface StageSelectSceneState {
-    highlightedStage: StageNames;
+    highlightedStage: number;
 }
 
 export interface PlayingSceneState {}
@@ -130,7 +139,7 @@ export interface CompleteSceneState {}
 
 // STAGES
 export interface StageState {
-    stageSelected: StageNames | null;
+    stageSelected: StageNames | undefined;
     stagesCompleted: StageNames[];
     stages: Stage[]; // array because order matters
 }

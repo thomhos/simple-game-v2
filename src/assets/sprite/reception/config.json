@@ -1,6 +1,6 @@
 {
-    "player-idle-right": {
-        "path": "assets/sprite/amelia/Amelia_16x16.png",
+    "reception-idle-right": {
+        "path": "assets/sprite/reception/reception_16x16.png",
         "frames": [
             { "x": 0, "y": 32, "width": 16, "height": 32 },
             { "x": 16, "y": 32, "width": 16, "height": 32 },
@@ -12,8 +12,8 @@
         "frameDuration": 200,
         "loop": true
     },
-    "player-idle-up": {
-        "path": "assets/sprite/amelia/Amelia_16x16.png",
+    "reception-idle-up": {
+        "path": "assets/sprite/reception/reception_16x16.png",
         "frames": [
             { "x": 96, "y": 32, "width": 16, "height": 32 },
             { "x": 112, "y": 32, "width": 16, "height": 32 },
@@ -25,8 +25,8 @@
         "frameDuration": 200,
         "loop": true
     },
-    "player-idle-left": {
-        "path": "assets/sprite/amelia/Amelia_16x16.png",
+    "reception-idle-left": {
+        "path": "assets/sprite/reception/reception_16x16.png",
         "frames": [
             { "x": 192, "y": 32, "width": 16, "height": 32 },
             { "x": 208, "y": 32, "width": 16, "height": 32 },
@@ -38,8 +38,8 @@
         "frameDuration": 200,
         "loop": true
     },
-    "player-idle-down": {
-        "path": "assets/sprite/amelia/Amelia_16x16.png",
+    "reception-idle-down": {
+        "path": "assets/sprite/reception/reception_16x16.png",
         "frames": [
             { "x": 288, "y": 32, "width": 16, "height": 32 },
             { "x": 304, "y": 32, "width": 16, "height": 32 },
@@ -51,8 +51,8 @@
         "frameDuration": 200,
         "loop": true
     },
-    "player-walk-right": {
-        "path": "assets/sprite/amelia/Amelia_16x16.png",
+    "reception-walk-right": {
+        "path": "assets/sprite/reception/reception_16x16.png",
         "frames": [
             { "x": 0, "y": 64, "width": 16, "height": 32 },
             { "x": 16, "y": 64, "width": 16, "height": 32 },
@@ -64,8 +64,8 @@
         "frameDuration": 50,
         "loop": true
     },
-    "player-walk-up": {
-        "path": "assets/sprite/amelia/Amelia_16x16.png",
+    "reception-walk-up": {
+        "path": "assets/sprite/reception/reception_16x16.png",
         "frames": [
             { "x": 96, "y": 64, "width": 16, "height": 32 },
             { "x": 112, "y": 64, "width": 16, "height": 32 },
@@ -77,8 +77,8 @@
         "frameDuration": 50,
         "loop": true
     },
-    "player-walk-left": {
-        "path": "assets/sprite/amelia/Amelia_16x16.png",
+    "reception-walk-left": {
+        "path": "assets/sprite/reception/reception_16x16.png",
         "frames": [
             { "x": 192, "y": 64, "width": 16, "height": 32 },
             { "x": 208, "y": 64, "width": 16, "height": 32 },
@@ -90,8 +90,8 @@
         "frameDuration": 50,
         "loop": true
     },
-    "player-walk-down": {
-        "path": "assets/sprite/amelia/Amelia_16x16.png",
+    "reception-walk-down": {
+        "path": "assets/sprite/reception/reception_16x16.png",
         "frames": [
             { "x": 288, "y": 64, "width": 16, "height": 32 },
             { "x": 304, "y": 64, "width": 16, "height": 32 },

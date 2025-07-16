@@ -1,8 +1,7 @@
 import { GameState, InputSystem } from '../types';
-import { applySystemAction } from '../actions';
+import { applySceneAction, applySystemAction } from '../actions';
 
 import { createEventEmitter } from './event-emitter';
-import { loadSpritesFromMap } from './sprite-loader';
 import { createInitialState } from './create-initial-state';
 import { update } from './update';
 import { render } from './render';
@@ -48,9 +47,11 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
             lastTime = 0;
             accumulatedTime = 0;
 
-            // Always start loading sprites, regardless of initial state
-            state = applySystemAction(state, { type: 'START_LOADING' }, FIXED_TIMESTEP);
-            state = applySystemAction(state, { type: 'SET_CANVAS_SIZE', width: ctx.canvas.width, height: ctx.canvas.height }, FIXED_TIMESTEP);
+            state = applySystemAction(
+                state,
+                { type: 'SET_CANVAS_SIZE', width: ctx.canvas.width, height: ctx.canvas.height },
+                FIXED_TIMESTEP
+            );
 
             // Start listening to input
             input.start();
@@ -58,36 +59,28 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
             events.emit('start', { state });
             loop(0);
 
-            try {
-                const loadedSprites = await loadSpritesFromMap(state.sprites.spriteMap);
-                // Dispatch SPRITES_LOADED action to transition to playing mode
-                state = applySystemAction(state, { type: 'SPRITES_LOADED', loadedSprites }, FIXED_TIMESTEP);
-            } catch (error) {
-                console.error('Failed to load sprites:', error);
-                // Dispatch error action to show error page
+            // TODO: Implement sprite loading for new asset structure
+            // For now, transition to menu scene after a short delay
+            setTimeout(() => {
                 state = applySystemAction(
                     state,
                     {
-                        type: 'THROW_ERROR',
-                        message: 'Failed to load game sprites',
-                        details: error instanceof Error ? error.message : 'Unknown error',
+                        type: 'ASSETS_LOADED',
+                        audio: {} as any,
+                        images: {} as any,
+                        sprites: {} as any,
                     },
-                    0
+                    FIXED_TIMESTEP
                 );
-            }
-        },
-        pause: () => {
-            if (state.gameMode !== 'paused') {
-                state = { ...state, gameMode: 'paused' };
-                events.emit('pause', { state });
-            }
-        },
-        resume: () => {
-            if (state.gameMode === 'paused') {
-                state = { ...state, gameMode: 'playing' };
-                lastTime = performance.now();
-                events.emit('resume', { state });
-            }
+                state = applySceneAction(
+                    state,
+                    {
+                        type: 'CHANGE_SCENE',
+                        scene: 'menu',
+                    },
+                    FIXED_TIMESTEP
+                );
+            }, 1000);
         },
         stop: (cb?: () => void) => {
             if (animationId) {
@@ -97,9 +90,7 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
 
             events.emit('stop', { state });
 
-            if (cb) {
-                cb();
-            }
+            if (cb) cb();
         },
     };
 }

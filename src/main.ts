@@ -24,8 +24,3 @@ game.on('stop', () => {
 });
 
 game.start();
-
-// Pause game when window loses focus, resume when it gains focus
-window.addEventListener('blur', () => {
-    game.pause();
-});

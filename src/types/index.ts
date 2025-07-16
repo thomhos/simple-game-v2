@@ -1,4 +1,3 @@
-export * from './game';
+export * from './game-state';
 export * from './input';
 export * from './actions';
-export * from './sprites';

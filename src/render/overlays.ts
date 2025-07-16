@@ -25,17 +25,19 @@ export function drawErrorOverlay(renderCtx: RenderContext): RenderContext {
     ctx.fillText('Something went wrong!', ctx.canvas.width / 2, ctx.canvas.height / 2 - 60);
 
     ctx.font = '20px Arial';
-    ctx.fillText(error.message || 'An unknown error occurred', ctx.canvas.width / 2, ctx.canvas.height / 2 - 10);
-
-    if (error.details) {
-        ctx.font = '16px Arial';
-        ctx.fillStyle = '#cccccc';
-        ctx.fillText(error.details, ctx.canvas.width / 2, ctx.canvas.height / 2 + 30);
-    }
+    ctx.fillText(
+        error.message || 'An unknown error occurred',
+        ctx.canvas.width / 2,
+        ctx.canvas.height / 2 - 10
+    );
 
     ctx.font = '18px Arial';
     ctx.fillStyle = '#ffffff';
-    ctx.fillText('Please refresh the page to try again', ctx.canvas.width / 2, ctx.canvas.height / 2 + 70);
+    ctx.fillText(
+        'Please refresh the page to try again',
+        ctx.canvas.width / 2,
+        ctx.canvas.height / 2 + 70
+    );
 
     ctx.textAlign = 'left'; // Reset alignment
     return renderCtx;
@@ -59,10 +61,37 @@ export function drawDebugInfo(renderCtx: RenderContext): RenderContext {
     const { ctx, state } = renderCtx;
     ctx.fillStyle = '#ffffff';
     ctx.font = '16px Arial';
-    ctx.fillText(`Player: (${Math.round(state.player.x)}, ${Math.round(state.player.y)})`, 10, 30);
-    ctx.fillText(`Animation: ${state.player.spriteAnimationState.currentAnimation}`, 10, 50);
-    ctx.fillText(`Sprites loaded: ${state.sprites.isLoaded}`, 10, 70);
-    ctx.fillText('Use arrow keys or WASD to move', 10, 90);
-    ctx.fillText('Press Escape to pause/resume', 10, 110);
+    let yOffset = 22;
+    
+    // Show game time
+    ctx.fillText(`GameTime: ${(state.system.gameTime / 1000).toFixed(2)}`, 10, yOffset);
+    yOffset += 20;
+    
+    // Show current scene
+    ctx.fillText(`Scene: ${state.scenes.currentScene}`, 10, yOffset);
+    yOffset += 20;
+
+    // Show transition state
+    const { scenes } = state;
+    if (scenes.isTransitioningOut) {
+        const progress = Math.min(1, (state.system.gameTime - scenes.transitionStartTime) / scenes.transitionDuration);
+        ctx.fillText(`Transitioning OUT to ${scenes.nextScene}: ${(progress * 100).toFixed(1)}%`, 10, yOffset);
+        yOffset += 20;
+    }
+    
+    if (scenes.isTransitioningIn) {
+        const progress = Math.min(1, (state.system.gameTime - scenes.transitionStartTime) / scenes.transitionDuration);
+        ctx.fillText(`Transitioning IN: ${(progress * 100).toFixed(1)}%`, 10, yOffset);
+        yOffset += 20;
+    }
+
+    // Show next scene if set
+    if (scenes.nextScene) {
+        ctx.fillText(`Next Scene: ${scenes.nextScene}`, 10, yOffset);
+        yOffset += 20;
+    }
+
+    ctx.fillText('Press 1 to go to menu, 2 to go to playing', 10, yOffset);
+    
     return renderCtx;
 }

@@ -1,37 +1,17 @@
 import { GameState, GameAction } from '../types';
 
-export function applySystemAction(state: GameState, action: GameAction, _fixedTimeStep: number): GameState {
+export function applySystemAction(
+    state: GameState,
+    action: GameAction,
+    fixedTimeStep: number
+): GameState {
     switch (action.type) {
-        case 'PAUSE_GAME': {
+        case 'INCREMENT_GAME_TIME': {
             return {
                 ...state,
-                gameMode: 'paused',
-            };
-        }
-        case 'START_GAME': {
-            return {
-                ...state,
-                gameMode: 'playing',
-            };
-        }
-        case 'START_LOADING': {
-            return {
-                ...state,
-                gameMode: 'loading',
-                sprites: {
-                    ...state.sprites,
-                    isLoaded: false,
-                },
-            };
-        }
-        case 'SPRITES_LOADED': {
-            return {
-                ...state,
-                gameMode: 'playing',
-                sprites: {
-                    ...state.sprites,
-                    isLoaded: true,
-                    loadedSprites: action.loadedSprites,
+                system: {
+                    ...state.system,
+                    gameTime: state.system.gameTime + fixedTimeStep,
                 },
             };
         }
@@ -42,7 +22,6 @@ export function applySystemAction(state: GameState, action: GameAction, _fixedTi
                     ...state.system,
                     error: {
                         message: action.message,
-                        details: action.details,
                     },
                 },
             };
@@ -52,7 +31,7 @@ export function applySystemAction(state: GameState, action: GameAction, _fixedTi
                 ...state,
                 system: {
                     ...state.system,
-                    error: null,
+                    error: undefined,
                 },
             };
         }

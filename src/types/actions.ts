@@ -1,23 +1,22 @@
-import { LoadedSprites } from './sprites';
-import { PlayerDirections } from './game';
+import { SceneNames, StageNames } from './game-state';
 
-export type GameAction =
+type SystemAction =
     | {
-          type: 'MOVE_PLAYER';
-          direction: PlayerDirections;
+          type: 'INCREMENT_GAME_TIME';
       }
-    | { type: 'STOP_PLAYER' }
-    | { type: 'PAUSE_GAME' }
-    | { type: 'START_LOADING' }
-    | { type: 'START_GAME' }
     | {
-          type: 'SPRITES_LOADED';
-          loadedSprites: LoadedSprites;
+          type: 'ASSETS_LOADED';
+          audio: HTMLAudioElement[];
+          images: HTMLImageElement[];
+          sprites: HTMLImageElement[];
+      }
+    | {
+          type: 'SELECT_STAGE';
+          stage: StageNames;
       }
     | {
           type: 'THROW_ERROR';
           message: string;
-          details?: string;
       }
     | { type: 'RESOLVE_ERROR' }
     | {
@@ -25,3 +24,30 @@ export type GameAction =
           width: number;
           height: number;
       };
+
+type SceneAction =
+    | {
+          type: 'CHANGE_SCENE';
+          scene: SceneNames;
+      }
+    | {
+          type: 'START_SCENE_TRANSITION_OUT';
+          targetScene: SceneNames;
+      }
+    | {
+          type: 'FINISH_SCENE_TRANSITION_OUT';
+      }
+    | {
+          type: 'START_SCENE_TRANSITION_IN';
+      }
+    | {
+          type: 'FINISH_SCENE_TRANSITION_IN';
+      };
+// type PlayerAction =
+//     | {
+//           type: 'MOVE_PLAYER';
+//           direction: PlayerDirections;
+//       }
+//     | { type: 'STOP_PLAYER' };
+
+export type GameAction = SystemAction | SceneAction;

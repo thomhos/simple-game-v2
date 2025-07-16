@@ -74,7 +74,15 @@ export interface MapState {
 }
 
 // PLAYER
-export type PlayerAnimationNames = 'idle-up' | 'idle-down' | 'idle-left' | 'idle-right' | 'walk-up' | 'walk-down' | 'walk-left' | 'walk-right';
+export type PlayerAnimationNames =
+    | 'idle-up'
+    | 'idle-down'
+    | 'idle-left'
+    | 'idle-right'
+    | 'walk-up'
+    | 'walk-down'
+    | 'walk-left'
+    | 'walk-right';
 export type PlayerDirections = 'up' | 'down' | 'left' | 'right';
 export type PlayerMovementStates = 'idle' | 'walk';
 
@@ -94,6 +102,5 @@ export interface PlayerState {
         readonly currentAnimation: PlayerAnimationNames;
         readonly animationStartTime: number;
         readonly currentFrame: number;
-        readonly frameTimer: number; // maybe same as animationStartTime
     };
 }

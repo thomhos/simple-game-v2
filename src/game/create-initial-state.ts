@@ -45,7 +45,6 @@ export function createInitialState(): GameState {
                 currentAnimation: 'idle-down',
                 animationStartTime: 0,
                 currentFrame: 0,
-                frameTimer: 0,
             },
         },
     };

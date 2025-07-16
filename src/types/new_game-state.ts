@@ -1,3 +1,16 @@
+/*
+ *  Game                - Is the full state
+ *      System          - Holds all the state related to the Game Application, so it can run well
+ *      Assets          - Hold all the assets and whether they are loaded
+ *      Scenes          - Are all the specific screens
+ *          Local       - Local screen state holds state that is only specific to that screen
+ *      Stages          - State for each stage, is separate because Intro, StageSelect, Playing and Complete scenes need to access it
+ *          Shared      - There is some shared state across stages, such as which one is active and completed.
+ *          Each stage  - Each stage then has it's own local state for stage specific state
+ *              Player  - Player state for this stage, inherits from a base player interface, but is managed per stage
+ *              Map     - Map for this stage, inherits from a base map interface, but is managed per stage
+ */
+
 // GAME
 export interface GameState {
     system: SystemState;
@@ -10,6 +23,7 @@ export interface GameState {
 export interface SystemState {
     gameTime: number;
     hasSaveFile: boolean;
+    isMuted: boolean;
     canvas: {
         width: number;
         height: number;
@@ -21,37 +35,36 @@ export interface SystemState {
 
 // ASSETS
 export interface AssetState {
-    loadedAudio: loadedAudio;
+    audio: AudioMap;
     isAudioLoaded: boolean;
-    audioMap: AudioMap;
 
-    loadedImages: loadedImages;
+    images: ImagesMap;
     isImagesLoaded: boolean;
-    imagesMap: ImagesMap;
 
-    loadedSprites: LoadedSprites;
+    sprites: SpriteMap;
     isSpritesLoaded: boolean;
-    spriteMap: SpriteMap;
 }
 
 // ASSETS -> AUDIO
-export interface loadedAudio {}
-export interface AudioMap {}
+export type AudioMap = { [key: string]: Audio };
+export interface Audio {
+    readonly path: string;
+    readonly audioFile: HTMLAudioElement;
+    readonly duration: number;
+}
 
 // ASSETS -> IMAGES
-export interface loadedImages {}
-export interface ImagesMap {}
+export type ImagesMap = { [key: string]: Image };
+export interface Image {
+    readonly path: string;
+    readonly image: HTMLImageElement;
+    readonly width: number;
+    readonly height: number;
+}
 
 // ASSETS -> SPRITES
 export type SpriteNames = `${PlayerSkinNames}-${PlayerMovementTypes}-${PlayerDirections}`;
-export type SpriteMap = { [Property in SpriteNames]: SpriteConfig };
-
-export interface SpriteConfig {
-    readonly path: string;
-    readonly frames: SpriteFrame[];
-    readonly frameDuration: number;
-    readonly loop: boolean;
-}
+export type SpriteMap = { [Property in SpriteNames]: Sprite };
 
 export interface SpriteFrame {
     readonly x: number;
@@ -60,42 +73,87 @@ export interface SpriteFrame {
     readonly height: number;
 }
 
-export interface SpriteAsset {
+export interface Sprite {
+    readonly path: string;
     readonly image: HTMLImageElement;
     readonly width: number;
     readonly height: number;
+    readonly frames: SpriteFrame[];
+    readonly frameDuration: number;
+    readonly loop: boolean;
 }
-
-export interface LoadedSprites {
-    readonly [path: string]: SpriteAsset;
-}
-
-export type PlayerSpriteMap = { [Property in PlayerAnimationNames]: SpriteNames };
 
 // SCENES
 export type SceneNames = 'loading' | 'menu' | 'intro' | 'stage-select' | 'playing' | 'complete';
 
 export interface SceneState {
-    current: SceneNames;
+    currentScene: SceneNames;
+    nextScene: SceneNames;
+    localState: LocalSceneState;
+
+    isTransitioningIn: boolean;
+    isTransitioningOut: boolean;
+    transitionStartTime: number;
+    transitionProgress: number;
 }
+
+export type LocalSceneState =
+    | LoadingSceneState
+    | MenuSceneState
+    | IntroSceneState
+    | StageSelectSceneState
+    | PlayingSceneState
+    | CompleteSceneState;
+
+export interface LoadingSceneState {
+    loadingStartTime: number;
+    loadingProgress: number;
+}
+
+export interface MenuSceneState {
+    menuItems: ['start', 'continue'];
+    highlightedMenuItem: number;
+}
+
+export interface IntroSceneState {
+    animationStartTime: number;
+    animationProgress: number;
+}
+
+export interface StageSelectSceneState {
+    highlightedStage: StageNames;
+}
+
+export interface PlayingSceneState {}
+
+export interface CompleteSceneState {}
 
 // STAGES
 export interface StageState {
-    availableStages: Stage[];
-    stagesCompleted: Stage[];
-    stage: Record<StageNames, Stage>;
+    stageSelected: StageNames | null;
+    stagesCompleted: StageNames[];
+    stages: Stage[]; // array because order matters
 }
 
 export type StageNames = 'janitor' | 'reception';
 
-export interface Stage {
+// maybe a similar pattern as with scenes? maybe one stage state and then some local state?
+export interface Stage<TPlayer extends StagePlayerState = StagePlayerState> {
+    name: StageNames;
     isRunning: boolean;
     isCompleted: boolean;
-    map: {};
-    player: {};
+    map: StageMap;
+    player: BasePlayerState & TPlayer;
 }
 
 // MAP
+export interface StageMap {}
+
+// STAGE 1
+export interface JanitorStagePlayerState extends StagePlayerState {
+    itemsToPickUp: [];
+    itemsPickedUp: [];
+}
 
 // PLAYER
 export type PlayerSkinNames = StageNames;
@@ -120,8 +178,4 @@ export interface StagePlayerState {
     readonly x: number;
     readonly y: number;
     readonly skin: PlayerSkinNames;
-}
-
-export interface JanitorStagePlayerState extends StagePlayerState {
-    itemsPickedUp: [];
 }

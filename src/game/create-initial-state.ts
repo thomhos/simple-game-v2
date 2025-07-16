@@ -64,12 +64,10 @@ export function createInitialState(): GameState {
             isAudioLoaded: false,
             images: {},
             isImagesLoaded: false,
-            spriteImages: {} as any, // Will be populated by sprite loader
             sprites: {
                 ...(janitorPlayerSprites as SpriteMap),
                 ...(receptionPlayerSprites as SpriteMap),
             },
-            isSpritesLoaded: false,
         },
         scenes: {
             currentScene: 'loading',

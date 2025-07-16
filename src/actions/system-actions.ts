@@ -15,6 +15,33 @@ export function applySystemAction(
                 },
             };
         }
+        case 'UPDATE_LOADING_PROGRESS': {
+            return {
+                ...state,
+                scenes: {
+                    ...state.scenes,
+                    localState: {
+                        ...state.scenes.localState,
+                        loading: {
+                            ...state.scenes.localState.loading,
+                            loadingProgress: action.progress,
+                        },
+                    },
+                },
+            };
+        }
+        case 'ASSETS_LOADED': {
+            return {
+                ...state,
+                assets: {
+                    ...state.assets,
+                    audio: action.audio,
+                    isAudioLoaded: true,
+                    images: action.images,
+                    isImagesLoaded: true,
+                },
+            };
+        }
         case 'THROW_ERROR': {
             return {
                 ...state,

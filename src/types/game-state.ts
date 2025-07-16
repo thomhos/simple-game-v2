@@ -36,20 +36,16 @@ export interface SystemState {
 // ASSETS
 export interface AssetState {
     audio: AudioMap;
-    isAudioLoaded: boolean;
-
     images: ImagesMap;
-    isImagesLoaded: boolean;
-
     sprites: SpriteMap;
-    spriteImages: SpriteImageMap;
-    isSpritesLoaded: boolean;
+    isAudioLoaded: boolean;
+    isImagesLoaded: boolean;
 }
 
 // ASSETS -> AUDIO
 export type AudioMap = { [key: string]: Audio };
 export interface Audio {
-    readonly path: string;
+    readonly path: string; // used to look up in the map
     readonly audioFile: HTMLAudioElement;
     readonly duration: number;
 }
@@ -57,7 +53,7 @@ export interface Audio {
 // ASSETS -> IMAGES
 export type ImagesMap = { [key: string]: Image };
 export interface Image {
-    readonly path: string;
+    readonly path: string; // used to look up in the map
     readonly image: HTMLImageElement;
     readonly width: number;
     readonly height: number;
@@ -67,8 +63,6 @@ export interface Image {
 export type SpriteNames = `${PlayerSkinNames}-${PlayerMovementTypes}-${PlayerDirections}`;
 export type SpriteMap = { [Property in SpriteNames]: Sprite };
 
-export type SpriteImageMap = { [Property in SpriteNames]: HTMLImageElement };
-
 export interface SpriteFrame {
     readonly x: number;
     readonly y: number;
@@ -77,7 +71,7 @@ export interface SpriteFrame {
 }
 
 export interface Sprite {
-    readonly path: string;
+    readonly path: string; // used to look up in the map
     // readonly width: number;
     // readonly height: number;
     readonly frames: SpriteFrame[];

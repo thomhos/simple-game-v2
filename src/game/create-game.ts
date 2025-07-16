@@ -5,6 +5,7 @@ import { createEventEmitter } from './event-emitter';
 import { createInitialState } from './create-initial-state';
 import { update } from './update';
 import { render } from './render';
+import { loadAllAssets } from './asset-loader';
 
 export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
     const events = createEventEmitter();
@@ -47,6 +48,7 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
             lastTime = 0;
             accumulatedTime = 0;
 
+            // Set canvas size, so don't have to hardcode elsewhere
             state = applySystemAction(
                 state,
                 { type: 'SET_CANVAS_SIZE', width: ctx.canvas.width, height: ctx.canvas.height },
@@ -59,28 +61,52 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
             events.emit('start', { state });
             loop(0);
 
-            // TODO: Implement sprite loading for new asset structure
-            // For now, transition to menu scene after a short delay
-            setTimeout(() => {
+            // Start loading assets
+            try {
+                const assets = await loadAllAssets(state, (progress) => {
+                    console.log(`Loading progress: ${(progress * 100).toFixed(1)}%`);
+                    state = applySystemAction(
+                        state,
+                        {
+                            type: 'UPDATE_LOADING_PROGRESS',
+                            progress: progress * 100,
+                        },
+                        FIXED_TIMESTEP
+                    );
+                });
+
+                // Assets loaded successfully
                 state = applySystemAction(
                     state,
                     {
                         type: 'ASSETS_LOADED',
-                        audio: {} as any,
-                        images: {} as any,
-                        sprites: {} as any,
+                        audio: assets.audio,
+                        images: assets.images,
                     },
                     FIXED_TIMESTEP
                 );
+
+                // Transition to menu scene
                 state = applySceneAction(
                     state,
                     {
                         type: 'CHANGE_SCENE',
                         scene: 'menu',
+                        skipOutAnimation: true,
                     },
                     FIXED_TIMESTEP
                 );
-            }, 1000);
+            } catch (error) {
+                console.error('Failed to load assets:', error);
+                state = applySystemAction(
+                    state,
+                    {
+                        type: 'THROW_ERROR',
+                        message: 'Failed to load game assets',
+                    },
+                    FIXED_TIMESTEP
+                );
+            }
         },
         stop: (cb?: () => void) => {
             if (animationId) {

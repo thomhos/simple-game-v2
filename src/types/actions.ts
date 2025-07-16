@@ -1,14 +1,17 @@
-import { SceneNames, StageNames } from './game-state';
+import { SceneNames, StageNames, AudioMap, ImagesMap } from './game-state';
 
 type SystemAction =
     | {
           type: 'INCREMENT_GAME_TIME';
       }
     | {
+          type: 'UPDATE_LOADING_PROGRESS';
+          progress: number;
+      }
+    | {
           type: 'ASSETS_LOADED';
-          audio: HTMLAudioElement[];
-          images: HTMLImageElement[];
-          sprites: HTMLImageElement[];
+          audio: AudioMap;
+          images: ImagesMap;
       }
     | {
           type: 'SELECT_STAGE';
@@ -29,10 +32,11 @@ type SceneAction =
     | {
           type: 'CHANGE_SCENE';
           scene: SceneNames;
+          skipOutAnimation?: boolean;
+          skipInAnimation?: boolean;
       }
     | {
           type: 'START_SCENE_TRANSITION_OUT';
-          targetScene: SceneNames;
       }
     | {
           type: 'FINISH_SCENE_TRANSITION_OUT';

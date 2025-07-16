@@ -3,7 +3,7 @@ import { GameState, GameAction } from '../types';
 export function applySceneAction(
     state: GameState,
     action: GameAction,
-    _fixedTimeStep: number
+    fixedTimeStep: number
 ): GameState {
     switch (action.type) {
         case 'CHANGE_SCENE': {
@@ -16,7 +16,26 @@ export function applySceneAction(
                 return state;
             }
 
-            // Start the transition out immediately
+            // If skipping out animation, immediately finish the transition out
+            if (action.skipOutAnimation) {
+                return applySceneAction(
+                    {
+                        ...state,
+                        scenes: {
+                            ...state.scenes,
+                            currentScene: action.scene,
+                            nextScene: undefined,
+                            isTransitioningOut: false,
+                        },
+                    },
+                    action.skipInAnimation
+                        ? { type: 'FINISH_SCENE_TRANSITION_IN' }
+                        : { type: 'START_SCENE_TRANSITION_IN' },
+                    fixedTimeStep
+                );
+            }
+
+            // Start the transition out normally
             return {
                 ...state,
                 scenes: {
@@ -43,6 +62,16 @@ export function applySceneAction(
             } else {
                 return state;
             }
+        }
+        case 'START_SCENE_TRANSITION_IN': {
+            return {
+                ...state,
+                scenes: {
+                    ...state.scenes,
+                    isTransitioningIn: true,
+                    transitionStartTime: state.system.gameTime,
+                },
+            };
         }
         case 'FINISH_SCENE_TRANSITION_IN': {
             return {

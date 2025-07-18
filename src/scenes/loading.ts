@@ -29,7 +29,13 @@ export class LoadingScene extends DefaultScene<LoadingSceneState> {
                 audio: assets.audio,
                 images: assets.images,
             });
-            this.changeScene('menu', true);
+
+            await new Promise((resolve) => {
+                setTimeout(resolve, 3000);
+            });
+
+            // Move to menu when done
+            this.changeScene('menu');
         } catch (error) {
             console.error('Failed to load assets:', error);
             this.dispatcher.dispatch({
@@ -46,20 +52,32 @@ export class LoadingScene extends DefaultScene<LoadingSceneState> {
             this.loadAssets(state);
         }
 
-
         if (state.input.keysPressed.includes('1') && this.transitionType === 'none') {
             this.changeScene('menu');
         }
     }
 
-    render(renderContext: RenderContext): RenderContext {
+    render(renderContext: RenderContext) {
         super.render(renderContext);
+
         const { ctx } = renderContext;
+
+        // Calculate fade effect based on transition state
+        let opacity = 1;
+        if (this.transitionType === 'in') {
+            opacity = this.transitionProgress;
+        } else if (this.transitionType === 'out') {
+            opacity = 1 - this.transitionProgress;
+        }
+
+        // Apply fade effect to entire scene
+        ctx.save();
+        ctx.globalAlpha = opacity;
 
         ctx.fillStyle = '#ffffff';
         ctx.font = '32px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('Loading sprites...', ctx.canvas.width / 2, ctx.canvas.height / 2);
+        ctx.fillText('Loading assets...', ctx.canvas.width / 2, ctx.canvas.height / 2);
 
         // Draw progress bar if we have progress
         if (this.localState.progress > 0) {
@@ -88,6 +106,7 @@ export class LoadingScene extends DefaultScene<LoadingSceneState> {
             ctx.textAlign = 'left'; // Reset alignment
         }
 
-        return renderContext;
+        // Restore canvas state after fade effect
+        renderContext.ctx.restore();
     }
 }

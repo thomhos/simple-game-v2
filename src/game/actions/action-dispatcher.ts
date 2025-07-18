@@ -1,4 +1,4 @@
-import { GameAction, ActionDispatcher } from '../types';
+import { GameAction, ActionDispatcher } from '../../types';
 
 export function createActionDispatcher(): ActionDispatcher {
     const actionQueue: GameAction[] = [];

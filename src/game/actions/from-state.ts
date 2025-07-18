@@ -1,4 +1,4 @@
-import { GameState, GameAction } from '../types';
+import { GameState, GameAction } from '../../types';
 
 export function actionsFromState(_state: GameState): GameAction[] {
     const actions: GameAction[] = [];

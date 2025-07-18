@@ -1,6 +1,13 @@
 import { SceneManager, ActionDispatcher, Scene, SceneNames } from '../types';
 
-import { LoadingScene, MenuScene, IntroScene } from '../scenes';
+import {
+    LoadingScene,
+    MenuScene,
+    IntroScene,
+    StageSelectScene,
+    Stage1Scene,
+    Stage2Scene,
+} from '../scenes';
 
 type SceneMap = { [key in SceneNames]: Scene };
 
@@ -12,6 +19,9 @@ export function createSceneManager(dispatch: ActionDispatcher): SceneManager {
         loading: new LoadingScene(dispatch),
         menu: new MenuScene(dispatch),
         intro: new IntroScene(dispatch),
+        'stage-select': new StageSelectScene(dispatch),
+        janitor: new Stage1Scene(dispatch),
+        reception: new Stage2Scene(dispatch),
     };
 
     return {

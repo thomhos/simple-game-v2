@@ -1,9 +1,13 @@
 import { GameState, InputSystem, GameAction } from '../types';
 import { pipe, createRenderContext, clearCanvas } from '../utils';
-import { actionsFromInput, actionsFromState, applySystemAction } from '../actions';
+import {
+    createActionDispatcher,
+    actionsFromInput,
+    actionsFromState,
+    applySystemAction,
+} from './actions';
 
 import { createEventEmitter } from './event-emitter';
-import { createActionDispatcher } from './action-dispatcher';
 import { createSceneManager } from './scene-manager';
 import { createInitialState } from './create-initial-state';
 
@@ -50,6 +54,7 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
 
         // Render the scenes
         pipe(createRenderContext(ctx, state), clearCanvas, sceneManager.render);
+
         animationId = requestAnimationFrame(loop);
     };
 

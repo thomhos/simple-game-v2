@@ -10,10 +10,11 @@ export class DefaultScene<T> implements Scene {
 
     nextScene: SceneNames | null = null;
 
-    transitionDuration: number = 1500;
+    transitionDuration: number = 500;
     transitionType: TransitionType = 'none';
     transitionStartTime: number = 0;
     transitionProgress: number = 0;
+    hasExited: boolean = false;
 
     constructor(dispatcher: ActionDispatcher) {
         this.dispatcher = dispatcher;
@@ -23,27 +24,29 @@ export class DefaultScene<T> implements Scene {
         this.transitionType = 'none';
         this.transitionProgress = 0;
         this.transitionStartTime = 0;
+        this.hasExited = false;
     }
 
     startTransition(type: TransitionType) {
         this.resetTransition();
         this.transitionType = type;
-        this.transitionStartTime = performance.now();
     }
 
     updateTransition(gameTime: number) {
-        const endTime = this.transitionStartTime + this.transitionDuration;
-        const progress = gameTime / endTime;
+        const elapsed = gameTime - this.transitionStartTime;
+        const progress = Math.min(elapsed / this.transitionDuration, 1);
         this.transitionProgress = progress;
 
         if (this.transitionProgress >= 1) {
             if (this.transitionType === 'in') {
                 this.onEnterComplete();
+                this.resetTransition(); // Only reset after enter completes
             }
             if (this.transitionType === 'out') {
+                this.hasExited = true;
                 this.onExitComplete();
+                // Don't reset transition - let the new scene reset it in onEnter()
             }
-            this.resetTransition();
         }
     }
 
@@ -54,9 +57,7 @@ export class DefaultScene<T> implements Scene {
         }
     }
 
-    onEnterComplete() {
-        console.log('welcome to: ', this.name);
-    }
+    onEnterComplete() {}
 
     onExit() {
         if (this.transitionType === 'none') {
@@ -72,7 +73,6 @@ export class DefaultScene<T> implements Scene {
                 type: 'CHANGE_SCENE',
                 scene,
             });
-            // this.nextScene = null;
         }
     }
 
@@ -89,10 +89,19 @@ export class DefaultScene<T> implements Scene {
     }
 
     update(state: GameState, _fixedTimeStep: number) {
+        // Initialize transition start time with current gameTime if not set
         if (this.transitionType === 'in' || this.transitionType === 'out') {
+            if (this.transitionStartTime === 0) {
+                this.transitionStartTime = state.gameTime;
+            }
             this.updateTransition(state.gameTime);
         }
     }
 
-    render(_ctx: RenderContext) {}
+    render(_ctx: RenderContext) {
+        // Don't render anything if scene has exited
+        if (this.hasExited) {
+            return;
+        }
+    }
 }

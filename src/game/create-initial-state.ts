@@ -80,6 +80,8 @@ export function createInitialState(): GameState {
                 menu: {
                     menuItems: ['start', 'continue'],
                     highlightedMenuItem: 0,
+                    isFlashing: false,
+                    flashStartTime: 0,
                 },
                 intro: {
                     animationStartTime: 0,
@@ -93,7 +95,7 @@ export function createInitialState(): GameState {
             isTransitioningIn: false,
             isTransitioningOut: false,
             transitionStartTime: 0,
-            transitionDuration: 1500, //ms
+            transitionDuration: 500, //ms
         },
         stages: {
             stageSelected: undefined,

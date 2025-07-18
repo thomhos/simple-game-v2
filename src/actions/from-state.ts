@@ -20,5 +20,17 @@ export function actionsFromState(state: GameState): GameAction[] {
         actions.push({ type: 'FINISH_SCENE_TRANSITION_IN' });
     }
 
+    // Check if menu flash animation is finished
+    if (state.scenes.currentScene === 'menu') {
+        const menuState = state.scenes.localState.menu;
+        if (menuState.isFlashing) {
+            const flashElapsed = state.system.gameTime - menuState.flashStartTime;
+            const flashDuration = 300; // Must match the duration in render code
+            if (flashElapsed >= flashDuration) {
+                actions.push({ type: 'MENU_FLASH_END' });
+            }
+        }
+    }
+
     return actions;
 }

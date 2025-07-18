@@ -3,6 +3,7 @@ import { GameState } from '../types';
 // import { drawSpeechBubble } from '../render/speech-bubble';
 import { drawLoadingOverlay, drawErrorOverlay, drawDebugInfo } from '../render/overlays';
 import { createRenderContext, clearCanvas, drawBackground } from '../render/canvas-helpers';
+import { drawMenu } from '../render/menu';
 import { pipe, when } from '../utils';
 
 export const render = (ctx: CanvasRenderingContext2D, state: GameState): void => {
@@ -17,6 +18,7 @@ export const render = (ctx: CanvasRenderingContext2D, state: GameState): void =>
         drawBackground,
         drawDebugInfo,
         when(currentScene === 'loading', drawLoadingOverlay),
+        when(currentScene === 'menu', drawMenu),
         when(error !== undefined, drawErrorOverlay)
     );
 };

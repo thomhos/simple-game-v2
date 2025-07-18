@@ -46,6 +46,21 @@ type SceneAction =
       }
     | {
           type: 'FINISH_SCENE_TRANSITION_IN';
+      }
+    | {
+          type: 'MENU_NAVIGATE_UP';
+      }
+    | {
+          type: 'MENU_NAVIGATE_DOWN';
+      }
+    | {
+          type: 'MENU_SELECT';
+      }
+    | {
+          type: 'MENU_FLASH_START';
+      }
+    | {
+          type: 'MENU_FLASH_END';
       };
 // type PlayerAction =
 //     | {

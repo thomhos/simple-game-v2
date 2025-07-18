@@ -117,6 +117,8 @@ export interface LoadingSceneState {
 export interface MenuSceneState {
     menuItems: ['start', 'continue'];
     highlightedMenuItem: number;
+    isFlashing: boolean;
+    flashStartTime: number;
 }
 
 export interface IntroSceneState {

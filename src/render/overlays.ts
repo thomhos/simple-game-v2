@@ -61,37 +61,48 @@ export function drawDebugInfo(renderCtx: RenderContext): RenderContext {
     const { ctx, state } = renderCtx;
     ctx.fillStyle = '#ffffff';
     ctx.font = '16px Arial';
+    const xOffset = 10;
     let yOffset = 22;
-    
+
     // Show game time
-    ctx.fillText(`GameTime: ${(state.system.gameTime / 1000).toFixed(2)}`, 10, yOffset);
+    ctx.fillText(`GameTime: ${(state.system.gameTime / 1000).toFixed(2)}`, xOffset, yOffset);
     yOffset += 20;
-    
+
     // Show current scene
-    ctx.fillText(`Scene: ${state.scenes.currentScene}`, 10, yOffset);
+    ctx.fillText(`Scene: ${state.scenes.currentScene}`, xOffset, yOffset);
     yOffset += 20;
 
     // Show transition state
     const { scenes } = state;
     if (scenes.isTransitioningOut) {
-        const progress = Math.min(1, (state.system.gameTime - scenes.transitionStartTime) / scenes.transitionDuration);
-        ctx.fillText(`Transitioning OUT to ${scenes.nextScene}: ${(progress * 100).toFixed(1)}%`, 10, yOffset);
+        const progress = Math.min(
+            1,
+            (state.system.gameTime - scenes.transitionStartTime) / scenes.transitionDuration
+        );
+        ctx.fillText(
+            `Transitioning OUT to ${scenes.nextScene}: ${(progress * 100).toFixed(1)}%`,
+            xOffset,
+            yOffset
+        );
         yOffset += 20;
     }
-    
+
     if (scenes.isTransitioningIn) {
-        const progress = Math.min(1, (state.system.gameTime - scenes.transitionStartTime) / scenes.transitionDuration);
-        ctx.fillText(`Transitioning IN: ${(progress * 100).toFixed(1)}%`, 10, yOffset);
+        const progress = Math.min(
+            1,
+            (state.system.gameTime - scenes.transitionStartTime) / scenes.transitionDuration
+        );
+        ctx.fillText(`Transitioning IN: ${(progress * 100).toFixed(1)}%`, xOffset, yOffset);
         yOffset += 20;
     }
 
     // Show next scene if set
     if (scenes.nextScene) {
-        ctx.fillText(`Next Scene: ${scenes.nextScene}`, 10, yOffset);
+        ctx.fillText(`Next Scene: ${scenes.nextScene}`, xOffset, yOffset);
         yOffset += 20;
     }
 
-    ctx.fillText('Press 1 to go to menu, 2 to go to playing', 10, yOffset);
-    
+    ctx.fillText('Press 1 to go to menu, 2 to go to playing', xOffset, yOffset);
+
     return renderCtx;
 }

@@ -2,8 +2,13 @@ import { GameAction } from '../types/actions';
 import { InputState } from '../types/input';
 import { GameState } from '../types';
 
-export function actionsFromInput(_state: GameState, input: InputState): GameAction[] {
+export function actionsFromInput(state: GameState, input: InputState): GameAction[] {
     const actions: GameAction[] = [];
+
+    // Block all input during scene transitions
+    if (state.scenes.isTransitioningIn || state.scenes.isTransitioningOut) {
+        return actions;
+    }
 
     // Test scene transitions
     if (input.keysPressed.includes('1')) {
@@ -11,6 +16,19 @@ export function actionsFromInput(_state: GameState, input: InputState): GameActi
     }
     if (input.keysPressed.includes('2')) {
         actions.push({ type: 'CHANGE_SCENE', scene: 'playing' });
+    }
+
+    // Menu navigation
+    if (state.scenes.currentScene === 'menu') {
+        if (input.keysPressed.includes('ArrowUp') || input.keysPressed.includes('w')) {
+            actions.push({ type: 'MENU_NAVIGATE_UP' });
+        }
+        if (input.keysPressed.includes('ArrowDown') || input.keysPressed.includes('s')) {
+            actions.push({ type: 'MENU_NAVIGATE_DOWN' });
+        }
+        if (input.keysPressed.includes('Enter') || input.keysPressed.includes(' ')) {
+            actions.push({ type: 'MENU_SELECT' });
+        }
     }
 
     // // TODO: Implement pause/resume for scene-based structure

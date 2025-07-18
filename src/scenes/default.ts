@@ -65,7 +65,6 @@ export class DefaultScene<T> implements Scene {
     }
 
     onExitComplete() {
-        console.log('5');
         if (this.nextScene) {
             const scene = this.nextScene;
             this.nextScene = null;

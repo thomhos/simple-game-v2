@@ -46,7 +46,6 @@ export class LoadingScene extends DefaultScene<LoadingSceneState> {
             this.loadAssets(state);
         }
 
-        console.log(this.localState.progress);
 
         if (state.input.keysPressed.includes('1') && this.transitionType === 'none') {
             this.changeScene('menu');

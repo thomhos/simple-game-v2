@@ -24,13 +24,6 @@ export interface GameState {
 
     currentScene: SceneNames;
 
-    transition: {
-        isTransitioning: boolean;
-        fromScene?: SceneNames;
-        toScene?: SceneNames;
-        startTime: number;
-        duration: number;
-    };
 
     availableStages: number;
     completedStages: number;

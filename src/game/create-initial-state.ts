@@ -30,11 +30,6 @@ export function createInitialState(): GameState {
             keysPressed: [],
         },
         currentScene: 'loading',
-        transition: {
-            isTransitioning: false,
-            startTime: 0,
-            duration: 500,
-        },
         availableStages: 2,
         completedStages: 0,
         currentStage: 0,

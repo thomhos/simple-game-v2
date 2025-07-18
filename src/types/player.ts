@@ -1,4 +1,4 @@
-import { StageNames } from './stages';
+import { StageNames } from './scenes';
 
 export type PlayerSkinNames = StageNames;
 export type PlayerAnimationNames = `${PlayerMovementTypes}-${PlayerDirections}`;

@@ -12,13 +12,10 @@ export function applySystemAction(
                 gameTime: state.gameTime + fixedTimeStep,
             };
         }
-        case 'UPDATE_LOADING_PROGRESS': {
+        case 'UPDATE_INPUT': {
             return {
                 ...state,
-                loading: {
-                    ...state.loading,
-                    progress: action.progress,
-                },
+                input: action.input,
             };
         }
         case 'ASSETS_LOADED': {
@@ -57,7 +54,7 @@ export function applySystemAction(
             };
         }
         case 'CHANGE_SCENE': {
-            // If already transitioning, ignore the action
+            // If already on this scene, ignore the action
             if (state.currentScene === action.scene) {
                 return state;
             }

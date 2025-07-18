@@ -1,3 +1,5 @@
+import { GameState, RenderContext } from '../types';
+
 export function createCanvas(id: string, width: number, height: number): CanvasRenderingContext2D {
     const canvas = document.getElementById(id) as HTMLCanvasElement;
     if (!canvas) {
@@ -18,3 +20,17 @@ export function createCanvas(id: string, width: number, height: number): CanvasR
 
     return ctx;
 }
+
+export const createRenderContext = (
+    ctx: CanvasRenderingContext2D,
+    state: GameState
+): RenderContext => ({
+    ctx,
+    state,
+});
+
+// Base rendering functions
+export const clearCanvas = (renderCtx: RenderContext): RenderContext => {
+    renderCtx.ctx.clearRect(0, 0, renderCtx.ctx.canvas.width, renderCtx.ctx.canvas.height);
+    return renderCtx;
+};

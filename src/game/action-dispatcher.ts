@@ -1,10 +1,4 @@
-import { GameAction } from '../types';
-
-export interface ActionDispatcher {
-    dispatch(action: GameAction): void;
-    dispatch(action: GameAction, delay?: number): void;
-    getQueuedActions(): GameAction[];
-}
+import { GameAction, ActionDispatcher } from '../types';
 
 export function createActionDispatcher(): ActionDispatcher {
     const actionQueue: GameAction[] = [];

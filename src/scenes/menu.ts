@@ -1,17 +1,17 @@
-import { GameState, InputState } from '../types';
+import { GameState } from '../types';
 
-import { DefaultScene } from './default-scene';
+import { DefaultScene } from './default';
 
-interface IntroSceneState {}
+interface MenuSceneState {}
 
-export class IntroScene extends DefaultScene<IntroSceneState> {
-    name = 'intro';
+export class MenuScene extends DefaultScene<MenuSceneState> {
+    name = 'menu';
 
-    update(state: GameState, input: InputState, _fixedTimeStep: number) {
-        super.update(state, input, _fixedTimeStep);
+    update(state: GameState, fts: number) {
+        super.update(state, fts);
 
-        if (input.keysPressed.includes('1') && this.transitionType === 'none') {
-            this.changeScene('menu');
+        if (state.input.keysPressed.includes('2') && this.transitionType === 'none') {
+            this.changeScene('intro');
         }
     }
 }

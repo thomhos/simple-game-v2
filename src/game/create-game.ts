@@ -1,13 +1,11 @@
-import { GameState, InputSystem } from '../types';
+import { GameState, InputSystem, GameAction } from '../types';
+import { pipe, createRenderContext, clearCanvas } from '../utils';
+import { actionsFromInput, actionsFromState, applySystemAction } from '../actions';
 
 import { createEventEmitter } from './event-emitter';
 import { createActionDispatcher } from './action-dispatcher';
+import { createSceneManager } from './scene-manager';
 import { createInitialState } from './create-initial-state';
-import { update } from './update';
-import { render } from './render';
-import { loadAllAssets } from './asset-loader';
-import { createSceneManager } from '../scenes/scene-manager';
-// import { LoadingScene } from '../scenes/loading-scene';
 
 export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
     const events = createEventEmitter();
@@ -21,9 +19,6 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
 
     const FIXED_TIMESTEP = 1000 / 60; // 16.67ms for 60fps
 
-    // Provide dispatch to scenes
-    // LoadingScene.provideDispatcher(dispatcher);
-
     // Define game loop
     const loop = (currentTime: number) => {
         const deltaTime = currentTime - lastTime;
@@ -32,8 +27,20 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
 
         // If frame processing was slow, catch up first before moving on
         while (accumulatedTime >= FIXED_TIMESTEP) {
-            state = update(state, dispatcher.getQueuedActions(), input.getState(), FIXED_TIMESTEP);
-            sceneManager.update(state, input.getState(), FIXED_TIMESTEP);
+            const actions: GameAction[] = [
+                ...actionsFromInput(state, input.getState()), // map any incoming input into actions
+                ...actionsFromState(state), // see if the current state is generating any actions
+                ...dispatcher.getQueuedActions(), // see if the scenes generated any acitons
+            ];
+
+            // Update state by processing all system actions
+            state = actions.reduce(
+                (acc, action) => applySystemAction(acc, action, FIXED_TIMESTEP),
+                state
+            );
+
+            // Update all scenes (they cannot update the state, only through dispatcher)
+            sceneManager.update(state, FIXED_TIMESTEP);
 
             // Clear pressed keys after processing input
             input.clearPressed();
@@ -41,8 +48,8 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
             accumulatedTime -= FIXED_TIMESTEP;
         }
 
-        render(ctx, state);
-        sceneManager.render({ ctx, state });
+        // Render the scenes
+        pipe(createRenderContext(ctx, state), clearCanvas, sceneManager.render);
         animationId = requestAnimationFrame(loop);
     };
 

@@ -1,16 +1,20 @@
-import { RenderContext } from '../render/canvas-helpers';
+import { RenderContext } from './render';
 import { GameState } from './game';
-import { InputState } from './input';
+
+export interface SceneManager {
+    update(state: GameState, fts: number): void;
+    render(ctx: RenderContext): RenderContext;
+}
 
 // Base scene interface that all scenes implement
 export interface Scene {
     // Core lifecycle methods
-    update(state: GameState, input: InputState, deltaTime: number): void;
+    update(state: GameState, deltaTime: number): void;
     render(ctx: RenderContext): void;
 
     // Scene lifecycle hooks
-    onEnter?(): void;
-    onExit?(): void;
+    onEnter(): void;
+    onExit(): void;
 }
 
 // Simplified scene names for routing
@@ -35,20 +39,6 @@ export interface LoadingSceneState {
 export interface PlayingSceneState {
     currentStage: StageNames | null;
     stagesCompleted: StageNames[];
-}
-
-// Base stage interface for mini-games
-export interface Stage<TState = any> {
-    readonly name: StageNames;
-    state: TState;
-
-    update(state: TState, input: InputState, deltaTime: number): TState;
-    render(ctx: CanvasRenderingContext2D, state: TState): void;
-
-    // Stage lifecycle
-    onStart?(): void;
-    onComplete?(): void;
-    onFail?(): void;
 }
 
 // Example stage states

@@ -1,5 +1,5 @@
 import { createGame } from './game';
-import { createCanvas } from './canvas';
+import { createCanvas } from './utils';
 import { createInputSystem } from './input';
 
 const ctx = createCanvas('gameCanvas', 800, 600);

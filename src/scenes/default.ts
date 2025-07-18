@@ -1,10 +1,8 @@
-import { ActionDispatcher } from '../game/action-dispatcher';
-import { RenderContext } from '../render/canvas-helpers';
-import { GameState, InputState, SceneNames } from '../types';
+import { ActionDispatcher, GameState, SceneNames, Scene, RenderContext } from '../types';
 
 type TransitionType = 'none' | 'in' | 'out';
 
-export class DefaultScene<T> {
+export class DefaultScene<T> implements Scene {
     name: string | undefined;
 
     localState: T | undefined = undefined;
@@ -91,7 +89,7 @@ export class DefaultScene<T> {
         }
     }
 
-    update(state: GameState, _input: InputState, _fixedTimeStep: number) {
+    update(state: GameState, _fixedTimeStep: number) {
         if (this.transitionType === 'in' || this.transitionType === 'out') {
             this.updateTransition(state.gameTime);
         }

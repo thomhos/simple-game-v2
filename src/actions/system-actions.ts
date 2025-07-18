@@ -9,24 +9,15 @@ export function applySystemAction(
         case 'INCREMENT_GAME_TIME': {
             return {
                 ...state,
-                system: {
-                    ...state.system,
-                    gameTime: state.system.gameTime + fixedTimeStep,
-                },
+                gameTime: state.gameTime + fixedTimeStep,
             };
         }
         case 'UPDATE_LOADING_PROGRESS': {
             return {
                 ...state,
-                scenes: {
-                    ...state.scenes,
-                    localState: {
-                        ...state.scenes.localState,
-                        loading: {
-                            ...state.scenes.localState.loading,
-                            loadingProgress: action.progress,
-                        },
-                    },
+                loading: {
+                    ...state.loading,
+                    progress: action.progress,
                 },
             };
         }
@@ -45,33 +36,34 @@ export function applySystemAction(
         case 'THROW_ERROR': {
             return {
                 ...state,
-                system: {
-                    ...state.system,
-                    error: {
-                        message: action.message,
-                    },
+                error: {
+                    message: action.message,
                 },
             };
         }
         case 'RESOLVE_ERROR': {
             return {
                 ...state,
-                system: {
-                    ...state.system,
-                    error: undefined,
-                },
+                error: undefined,
             };
         }
         case 'SET_CANVAS_SIZE': {
             return {
                 ...state,
-                system: {
-                    ...state.system,
-                    canvas: {
-                        width: action.width,
-                        height: action.height,
-                    },
+                canvas: {
+                    width: action.width,
+                    height: action.height,
                 },
+            };
+        }
+        case 'CHANGE_SCENE': {
+            // If already transitioning, ignore the action
+            if (state.currentScene === action.scene) {
+                return state;
+            }
+            return {
+                ...state,
+                currentScene: action.scene,
             };
         }
         default:

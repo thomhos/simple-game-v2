@@ -1,4 +1,4 @@
-import { SceneNames, StageNames, AudioMap, ImagesMap } from './game-state';
+import { SceneNames, StageNames, AudioMap, ImagesMap } from '../types';
 
 type SystemAction =
     | {

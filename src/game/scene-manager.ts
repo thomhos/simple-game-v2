@@ -1,4 +1,4 @@
-import { SceneManager, ActionDispatcher, Scene, SceneNames } from '../types';
+import { SceneManager, Scene, SceneNames, GameStore } from '../types';
 
 import {
     LoadingScene,
@@ -11,21 +11,22 @@ import {
 
 type SceneMap = { [key in SceneNames]: Scene };
 
-export function createSceneManager(dispatch: ActionDispatcher): SceneManager {
+export function createSceneManager(store: GameStore): SceneManager {
     let currentScene: SceneNames | null = null;
     let sceneInHandled = true;
 
     const scenes: SceneMap = {
-        loading: new LoadingScene(dispatch),
-        menu: new MenuScene(dispatch),
-        intro: new IntroScene(dispatch),
-        'stage-select': new StageSelectScene(dispatch),
-        janitor: new Stage1Scene(dispatch),
-        reception: new Stage2Scene(dispatch),
+        loading: new LoadingScene(store),
+        menu: new MenuScene(store),
+        intro: new IntroScene(store),
+        'stage-select': new StageSelectScene(store),
+        janitor: new Stage1Scene(store),
+        reception: new Stage2Scene(store),
     };
 
     return {
-        update(state, fts) {
+        update(store) {
+            const state = store.getState();
             if (currentScene !== state.currentScene) {
                 if (currentScene) {
                     scenes[currentScene]?.onExit();
@@ -40,7 +41,7 @@ export function createSceneManager(dispatch: ActionDispatcher): SceneManager {
             }
 
             if (currentScene) {
-                scenes[currentScene]?.update(state, fts);
+                scenes[currentScene]?.update(store);
             }
         },
         render(ctx) {

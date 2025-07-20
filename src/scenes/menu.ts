@@ -1,4 +1,4 @@
-import { GameState, RenderContext, MenuSceneState } from '../types';
+import { RenderContext, MenuSceneState, GameStore } from '../types';
 import { DefaultScene } from './default';
 
 export class MenuScene extends DefaultScene<MenuSceneState> {
@@ -21,8 +21,9 @@ export class MenuScene extends DefaultScene<MenuSceneState> {
         }
     }
 
-    update(state: GameState, fts: number) {
-        super.update(state, fts);
+    update(store: GameStore) {
+        super.update(store);
+        const state = store.getState();
 
         // prevent input during transition
         if (this.transitionType !== 'none') return;

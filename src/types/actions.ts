@@ -1,11 +1,5 @@
 import { SceneNames, InputState, AudioMap, ImagesMap } from '../types';
 
-export interface ActionDispatcher {
-    dispatch(action: GameAction): void;
-    dispatch(action: GameAction, delay?: number): void;
-    getQueuedActions(): GameAction[];
-}
-
 export type GameAction =
     | { type: 'INCREMENT_GAME_TIME' }
     | { type: 'UPDATE_INPUT'; input: InputState }

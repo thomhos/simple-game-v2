@@ -7,6 +7,7 @@ import receptionPlayerSprites from '../assets/sprite/reception/config.json';
 export function createInitialState(): GameState {
     return {
         gameTime: 0,
+        fixedTimeStep: 0,
         canvas: {
             width: 0,
             height: 0,

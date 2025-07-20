@@ -1,4 +1,4 @@
-import { GameState, RenderContext } from '../types';
+import { GameStore, RenderContext } from '../types';
 import { DefaultScene } from './default';
 
 interface IntroSceneState {
@@ -31,8 +31,9 @@ export class IntroScene extends DefaultScene<IntroSceneState> {
         }
     }
 
-    update(state: GameState, fts: number) {
-        super.update(state, fts);
+    update(store: GameStore) {
+        super.update(store);
+        const state = store.getState();
 
         if (this.transitionType !== 'none') return;
 
@@ -50,7 +51,7 @@ export class IntroScene extends DefaultScene<IntroSceneState> {
         }
 
         // Update particles
-        this.updateParticles(fts);
+        this.updateParticles(state.fixedTimeStep);
 
         // Allow manual skip with Enter
         if (state.input.keysPressed.includes('Enter')) {

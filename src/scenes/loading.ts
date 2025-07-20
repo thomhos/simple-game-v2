@@ -1,4 +1,4 @@
-import { GameState, RenderContext } from '../types';
+import { GameStore, RenderContext } from '../types';
 import { DefaultScene } from './default';
 import { loadAllAssets } from '../game/asset-loader';
 
@@ -15,8 +15,9 @@ export class LoadingScene extends DefaultScene<LoadingSceneState> {
         progress: 0,
     };
 
-    async loadAssets(state: GameState) {
+    async loadAssets(store: GameStore) {
         this.localState.assetsRequested = true;
+        const state = store.getState();
         // Start loading assets
         try {
             const assets = await loadAllAssets(state, (progress) => {
@@ -24,7 +25,7 @@ export class LoadingScene extends DefaultScene<LoadingSceneState> {
             });
 
             // Assets loaded successfully
-            this.dispatcher.dispatch({
+            store.dispatch({
                 type: 'ASSETS_LOADED',
                 audio: assets.audio,
                 images: assets.images,
@@ -38,18 +39,19 @@ export class LoadingScene extends DefaultScene<LoadingSceneState> {
             this.changeScene('menu');
         } catch (error) {
             console.error('Failed to load assets:', error);
-            this.dispatcher.dispatch({
+            store.dispatch({
                 type: 'THROW_ERROR',
                 message: 'Failed to load game assets',
             });
         }
     }
 
-    update(state: GameState, fts: number) {
-        super.update(state, fts);
+    update(store: GameStore) {
+        super.update(store);
+        const state = store.getState();
 
         if (!this.localState?.assetsRequested) {
-            this.loadAssets(state);
+            this.loadAssets(store);
         }
 
         if (state.input.keysPressed.includes('1') && this.transitionType === 'none') {

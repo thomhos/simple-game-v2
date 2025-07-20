@@ -1,15 +1,11 @@
-import { GameState, GameAction } from '../../types';
+import { GameReducer } from '../types';
 
-export function applySystemAction(
-    state: GameState,
-    action: GameAction,
-    fixedTimeStep: number
-): GameState {
+export const gameReducer: GameReducer = (state, action) => {
     switch (action.type) {
         case 'INCREMENT_GAME_TIME': {
             return {
                 ...state,
-                gameTime: state.gameTime + fixedTimeStep,
+                gameTime: state.gameTime + state.fixedTimeStep,
             };
         }
         case 'UPDATE_INPUT': {
@@ -66,4 +62,4 @@ export function applySystemAction(
         default:
             return state;
     }
-}
+};

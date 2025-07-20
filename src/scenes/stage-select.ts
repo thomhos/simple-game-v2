@@ -1,4 +1,4 @@
-import { GameState, RenderContext, StageNames } from '../types';
+import { GameStore, RenderContext, StageNames } from '../types';
 import { DefaultScene } from './default';
 
 interface StageSelectSceneState {
@@ -46,8 +46,9 @@ export class StageSelectScene extends DefaultScene<StageSelectSceneState> {
         }
     }
 
-    update(state: GameState, fts: number) {
-        super.update(state, fts);
+    update(store: GameStore) {
+        super.update(store);
+        const state = store.getState();
 
         if (this.transitionType !== 'none') return;
 

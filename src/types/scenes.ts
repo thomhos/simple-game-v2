@@ -1,15 +1,15 @@
 import { RenderContext } from './render';
-import { GameState } from './game';
+import { GameStore } from './game';
 
 export interface SceneManager {
-    update(state: GameState, fts: number): void;
+    update(store: GameStore): void;
     render(ctx: RenderContext): RenderContext;
 }
 
 // Base scene interface that all scenes implement
 export interface Scene {
     // Core lifecycle methods
-    update(state: GameState, deltaTime: number): void;
+    update(store: GameStore): void;
     render(ctx: RenderContext): void;
 
     // Scene lifecycle hooks

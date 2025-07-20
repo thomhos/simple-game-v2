@@ -37,8 +37,8 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
             store.dispatch({ type: 'INCREMENT_GAME_TIME' });
             store.dispatch({ type: 'UPDATE_INPUT', input: input.getState() });
 
-            // Update all scenes (they cannot update the state, only through dispatcher)
-            sceneManager.update(store);
+            // Update all scenes (this have access to the store through the scenemanager)
+            sceneManager.update();
 
             // Clear pressed keys after processing input
             input.clearPressed();
@@ -60,20 +60,17 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
         getState: (): GameState => store.getState(),
 
         start: async (): Promise<void> => {
-            // Start listening to input
             input.start();
             events.emit('start', { state: store.getState() });
             loop(0);
         },
-        stop: (cb?: () => void) => {
+        stop: () => {
             if (animationId) {
                 cancelAnimationFrame(animationId);
                 animationId = null;
             }
 
             events.emit('stop', { state: store.getState() });
-
-            if (cb) cb();
         },
     };
 }

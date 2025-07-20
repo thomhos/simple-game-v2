@@ -11,14 +11,6 @@ game.on('start', () => {
     console.log('started');
 });
 
-game.on('pause', () => {
-    console.log('paused');
-});
-
-game.on('resume', () => {
-    console.log('resume');
-});
-
 game.on('stop', () => {
     console.log('stop');
 });

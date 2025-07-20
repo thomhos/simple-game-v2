@@ -2,7 +2,7 @@ import { RenderContext } from './render';
 import { GameStore } from './game';
 
 export interface SceneManager {
-    update(store: GameStore): void;
+    update(): void;
     render(ctx: RenderContext): RenderContext;
 }
 

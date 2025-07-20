@@ -25,7 +25,7 @@ export function createSceneManager(store: GameStore): SceneManager {
     };
 
     return {
-        update(store) {
+        update() {
             const state = store.getState();
             if (currentScene !== state.currentScene) {
                 if (currentScene) {

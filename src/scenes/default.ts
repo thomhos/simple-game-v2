@@ -4,7 +4,7 @@ type TransitionType = 'none' | 'in' | 'out';
 
 export class DefaultScene<T> implements Scene {
     name: string | undefined;
-
+    store: GameStore;
     dispatch: GameDispatcher;
     localState: T | undefined = undefined;
 
@@ -17,6 +17,7 @@ export class DefaultScene<T> implements Scene {
     hasExited: boolean = false;
 
     constructor(store: GameStore) {
+        this.store = store;
         this.dispatch = store.dispatch;
     }
 
@@ -67,29 +68,31 @@ export class DefaultScene<T> implements Scene {
 
     onExitComplete() {
         if (this.nextScene) {
-            const scene = this.nextScene;
-            this.nextScene = null;
             this.dispatch({
                 type: 'CHANGE_SCENE',
-                scene,
+                scene: this.nextScene,
             });
+            this.nextScene = null;
         }
     }
 
     changeScene(scene: SceneNames, skipAnimation?: boolean) {
-        if (skipAnimation) {
-            this.dispatch({
-                type: 'CHANGE_SCENE',
-                scene,
-            });
-        } else {
-            this.nextScene = scene;
-            this.startTransition('out');
+        // only handle if we're not already transitioning
+        if (this.transitionType === 'none') {
+            if (skipAnimation) {
+                this.dispatch({
+                    type: 'CHANGE_SCENE',
+                    scene,
+                });
+            } else {
+                this.nextScene = scene;
+                this.startTransition('out');
+            }
         }
     }
 
-    update(store: GameStore) {
-        const state = store.getState();
+    update() {
+        const state = this.store.getState();
         // Initialize transition start time with current gameTime if not set
         if (this.transitionType === 'in' || this.transitionType === 'out') {
             if (this.transitionStartTime === 0) {

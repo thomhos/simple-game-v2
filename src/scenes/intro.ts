@@ -1,4 +1,4 @@
-import { GameStore, RenderContext } from '../types';
+import { RenderContext } from '../types';
 import { DefaultScene } from './default';
 
 interface IntroSceneState {
@@ -31,9 +31,9 @@ export class IntroScene extends DefaultScene<IntroSceneState> {
         }
     }
 
-    update(store: GameStore) {
-        super.update(store);
-        const state = store.getState();
+    update() {
+        super.update();
+        const state = this.store.getState();
 
         if (this.transitionType !== 'none') return;
 

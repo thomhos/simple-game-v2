@@ -111,9 +111,9 @@ export class MenuScene extends DefaultScene<MenuSceneState> {
 
         // Draw title
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 48px Arial';
+        ctx.font = '48px Pixelify Sans';
         ctx.textAlign = 'center';
-        ctx.fillText('Game Menu', menuX, menuY - 100);
+        ctx.fillText('MENU', menuX, menuY - 100);
 
         // Draw menu buttons
         this.localState!.menuItems.forEach((item, index) => {
@@ -165,14 +165,14 @@ export class MenuScene extends DefaultScene<MenuSceneState> {
 
             // Draw button text
             ctx.fillStyle = '#ffffff';
-            ctx.font = '24px Arial';
+            ctx.font = '24px Pixelify Sans';
             ctx.textAlign = 'center';
             ctx.fillText(item.toUpperCase(), menuX, buttonY + 8);
         });
 
         // Draw instructions
         ctx.fillStyle = '#cccccc';
-        ctx.font = '16px Arial';
+        ctx.font = '16px Pixelify Sans';
         ctx.textAlign = 'center';
         ctx.fillText(
             'Use Arrow Keys/WASD to navigate, Enter/Space to select',

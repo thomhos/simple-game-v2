@@ -82,7 +82,7 @@ export class LoadingScene extends DefaultScene<LoadingSceneState> {
         ctx.fillStyle = '#ffffff';
         ctx.font = '32px Pixelify Sans';
         ctx.textAlign = 'center';
-        ctx.fillText('Loading ...', ctx.canvas.width / 2, ctx.canvas.height / 2 - 50);
+        ctx.fillText('loading ...', ctx.canvas.width / 2, ctx.canvas.height / 2 - 50);
 
         // Draw progress bar if we have progress
         if (this.localState.progress > 0) {

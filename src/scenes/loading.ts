@@ -80,28 +80,30 @@ export class LoadingScene extends DefaultScene<LoadingSceneState> {
         ctx.globalAlpha = opacity;
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = '32px Arial';
+        ctx.font = '32px Pixelify Sans';
         ctx.textAlign = 'center';
-        ctx.fillText('Loading assets...', ctx.canvas.width / 2, ctx.canvas.height / 2);
+        ctx.fillText('Loading ...', ctx.canvas.width / 2, ctx.canvas.height / 2 - 50);
 
         // Draw progress bar if we have progress
         if (this.localState.progress > 0) {
-            const barWidth = 300;
+            const barWidth = 250;
             const barHeight = 20;
             const barX = (ctx.canvas.width - barWidth) / 2;
-            const barY = ctx.canvas.height / 2 + 50;
+            const barY = ctx.canvas.height / 2;
 
-            // Background
-            ctx.fillStyle = '#333333';
-            ctx.fillRect(barX, barY, barWidth, barHeight);
+            // Progress bar outline
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(barX - 4, barY - 4, barWidth + 8, barHeight + 8);
 
             // Progress
-            ctx.fillStyle = '#4CAF50';
+            // ctx.fillStyle = '#4CAF50';
+            ctx.fillStyle = '#ffffff';
             ctx.fillRect(barX, barY, barWidth * this.localState.progress, barHeight);
 
             // Text
             ctx.fillStyle = '#ffffff';
-            ctx.font = '16px Arial';
+            ctx.font = '16px Pixelify Sans';
             ctx.fillText(
                 `${Math.round(this.localState.progress * 100)}%`,
                 ctx.canvas.width / 2,

@@ -1,5 +1,5 @@
 import { GameState, InputSystem, GameStore } from '../types';
-import { pipe, createRenderContext, clearCanvas } from '../utils';
+import { pipe, createRenderContext, clearCanvas, renderCRTEffects } from '../utils';
 
 import { createEventEmitter } from './event-emitter';
 import { createSceneManager } from './scene-manager';
@@ -47,7 +47,12 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
         }
 
         // Render the scenes
-        pipe(createRenderContext(ctx, store.getState()), clearCanvas, sceneManager.render);
+        pipe(
+            createRenderContext(ctx, store.getState()),
+            clearCanvas,
+            sceneManager.render,
+            renderCRTEffects
+        );
 
         animationId = requestAnimationFrame(loop);
     };

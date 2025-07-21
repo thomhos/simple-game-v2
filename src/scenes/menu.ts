@@ -1,12 +1,14 @@
 import { RenderContext, MenuSceneState } from '../types';
 import { DefaultScene } from './default';
+import { toNESColor } from '../utils';
 
 export class MenuScene extends DefaultScene<MenuSceneState> {
     name = 'menu';
 
     localState: MenuSceneState = {
         highlightedMenuItem: 0,
-        menuItems: ['start', 'continue'],
+        // menuItems: ['start', 'continue'],
+        menuItems: ['start'],
         isFlashing: false,
         flashStartTime: 0,
     };
@@ -80,11 +82,8 @@ export class MenuScene extends DefaultScene<MenuSceneState> {
 
         const { ctx, state } = renderContext;
         const { canvas } = ctx;
-        const menuX = canvas.width / 2;
-        const menuY = canvas.height / 2;
-        const buttonWidth = 200;
-        const buttonHeight = 50;
-        const buttonSpacing = 20;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
 
         // Calculate fade effect based on transition state
         let opacity = 1;
@@ -109,78 +108,90 @@ export class MenuScene extends DefaultScene<MenuSceneState> {
             }
         }
 
-        // Draw title
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '48px Pixelify Sans';
-        ctx.textAlign = 'center';
-        ctx.fillText('MENU', menuX, menuY - 100);
+        // Draw main logo/title
+        ctx.fillStyle = toNESColor('#ffffff');
+        ctx.fillRect(33, 105, 740, 180);
 
-        // Draw menu buttons
+        ctx.fillStyle = toNESColor('#000000');
+        ctx.fillRect(43, 115, 720, 160);
+        ctx.fillStyle = toNESColor('#000000');
+        ctx.fillRect(55, 95, 657, 30);
+
+        ctx.font = 'bold 80px "Press Start 2P"';
+
+        ctx.textAlign = 'left';
+        ctx.fillStyle = toNESColor('#f5e109');
+        ctx.fillText('BUSINESS', 72, 157);
+        ctx.fillStyle = toNESColor('#f57b09');
+        ctx.fillText('BUSINESS', 65, 150);
+
+        ctx.textAlign = 'right';
+        ctx.fillStyle = toNESColor('#f5e109');
+        ctx.fillText('BOB', canvas.width - 53, 257);
+        ctx.fillStyle = toNESColor('#f57b09');
+        ctx.fillText('BOB', canvas.width - 60, 250);
+
+        // Draw subtitle
+        ctx.fillStyle = toNESColor('#f57b09');
+        ctx.font = '16px "Press Start 2P"';
+        ctx.textAlign = 'left';
+        ctx.fillText('From Mop To Top', 65, 185);
+        ctx.fillStyle = toNESColor('#ffffff');
+        ctx.fillText('An adventure to the top', 65, 215);
+        ctx.fillText('of the corporate ladder!', 65, 245);
+
+        // Draw menu items (classic NES style - simple text list)
+        ctx.textAlign = 'center';
+        const menuStartY = centerY + 100;
+        const lineHeight = 40;
+
         this.localState!.menuItems.forEach((item, index) => {
-            const buttonY = menuY + index * (buttonHeight + buttonSpacing);
+            const itemY = menuStartY + index * lineHeight;
             const isHighlighted = index === this.localState!.highlightedMenuItem;
             const isFlashingItem =
                 this.localState!.isFlashing && index === this.localState!.highlightedMenuItem;
 
-            // Calculate colors with flash effect
-            let bgColor = isHighlighted ? [76, 175, 80] : [51, 51, 51];
-            let borderColor = isHighlighted ? [102, 187, 106] : [102, 102, 102];
+            // Draw selection indicator (classic NES style)
+            if (isHighlighted) {
+                ctx.fillStyle = toNESColor('#ffffff');
+                ctx.font = '16px';
+                ctx.textAlign = 'right';
 
-            if (isFlashingItem) {
-                const flashR = Math.floor(bgColor[0] + (255 - bgColor[0]) * flashIntensity);
-                const flashG = Math.floor(bgColor[1] + (255 - bgColor[1]) * flashIntensity);
-                const flashB = Math.floor(bgColor[2] + (255 - bgColor[2]) * flashIntensity);
-                bgColor = [flashR, flashG, flashB];
-
-                const borderFlashR = Math.floor(
-                    borderColor[0] + (255 - borderColor[0]) * flashIntensity
-                );
-                const borderFlashG = Math.floor(
-                    borderColor[1] + (255 - borderColor[1]) * flashIntensity
-                );
-                const borderFlashB = Math.floor(
-                    borderColor[2] + (255 - borderColor[2]) * flashIntensity
-                );
-                borderColor = [borderFlashR, borderFlashG, borderFlashB];
+                // Combine flash and transition opacity
+                const indicatorOpacity = isFlashingItem ? flashIntensity * opacity : opacity;
+                ctx.save();
+                ctx.globalAlpha = indicatorOpacity;
+                ctx.fillText('►', centerX - 60, itemY + 6);
+                ctx.restore();
             }
 
-            // Draw button background
-            ctx.fillStyle = `rgb(${bgColor[0]}, ${bgColor[1]}, ${bgColor[2]})`;
-            ctx.fillRect(
-                menuX - buttonWidth / 2,
-                buttonY - buttonHeight / 2,
-                buttonWidth,
-                buttonHeight
-            );
+            // Draw menu text
+            ctx.fillStyle = toNESColor('#ffffff');
+            ctx.font = '20px "Press Start 2P"';
+            ctx.textAlign = 'left';
 
-            // Draw button border
-            ctx.strokeStyle = `rgb(${borderColor[0]}, ${borderColor[1]}, ${borderColor[2]})`;
-            ctx.lineWidth = 2;
-            ctx.strokeRect(
-                menuX - buttonWidth / 2,
-                buttonY - buttonHeight / 2,
-                buttonWidth,
-                buttonHeight
-            );
+            // Flash the text if selected
+            if (isFlashingItem) {
+                ctx.save();
+                ctx.globalAlpha = flashIntensity;
+            }
 
-            // Draw button text
-            ctx.fillStyle = '#ffffff';
-            ctx.font = '24px Pixelify Sans';
-            ctx.textAlign = 'center';
-            ctx.fillText(item.toUpperCase(), menuX, buttonY + 8);
+            ctx.fillText(item, centerX - 40, itemY + 8);
+
+            if (isFlashingItem) {
+                ctx.restore();
+            }
         });
 
-        // Draw instructions
-        ctx.fillStyle = '#cccccc';
-        ctx.font = '16px Pixelify Sans';
+        // Draw copyright text (classic NES style)
+        ctx.fillStyle = toNESColor('#ffffff');
+        ctx.font = '12px "Press Start 2P"';
         ctx.textAlign = 'center';
-        ctx.fillText(
-            'Use Arrow Keys/WASD to navigate, Enter/Space to select',
-            menuX,
-            canvas.height - 50
-        );
+        ctx.fillText('© 2025 BUSINESS BOB PRODUCTIONS', centerX, canvas.height - 60);
+        ctx.fillText('SELECT START TO BEGIN', centerX, canvas.height - 35);
 
-        ctx.textAlign = 'left'; // Reset alignment
+        // Reset alignment
+        ctx.textAlign = 'left';
 
         // Restore canvas state after fade effect
         ctx.restore();

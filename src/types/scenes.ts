@@ -24,7 +24,7 @@ export type StageNames = 'janitor' | 'reception';
 // Menu scene specific state
 export interface MenuSceneState {
     highlightedMenuItem: number;
-    menuItems: ['start', 'continue'];
+    menuItems: ['start'];
     isFlashing: boolean;
     flashStartTime: number;
 }

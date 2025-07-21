@@ -1,5 +1,5 @@
 import { GameState, InputSystem, GameStore } from '../types';
-import { pipe, createRenderContext, clearCanvas, renderCRTEffects } from '../utils';
+import { pipe, createRenderContext, clearCanvas, renderCRTEffects, drawBackground } from '../utils';
 
 import { createEventEmitter } from './event-emitter';
 import { createSceneManager } from './scene-manager';
@@ -50,6 +50,7 @@ export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
         pipe(
             createRenderContext(ctx, store.getState()),
             clearCanvas,
+            drawBackground('#000000'),
             sceneManager.render,
             renderCRTEffects
         );

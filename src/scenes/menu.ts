@@ -1,6 +1,6 @@
 import { RenderContext, MenuSceneState } from '../types';
 import { DefaultScene } from './default';
-import { toNESColor } from '../utils';
+import { toColorPalette } from '../utils';
 
 export class MenuScene extends DefaultScene<MenuSceneState> {
     name = 'menu';
@@ -109,36 +109,36 @@ export class MenuScene extends DefaultScene<MenuSceneState> {
         }
 
         // Draw main logo/title
-        ctx.fillStyle = toNESColor('#ffffff');
+        ctx.fillStyle = toColorPalette('#ffffff');
         ctx.fillRect(33, 105, 740, 180);
 
-        ctx.fillStyle = toNESColor('#000000');
+        ctx.fillStyle = toColorPalette('#000000');
         ctx.fillRect(43, 115, 720, 160);
-        ctx.fillStyle = toNESColor('#000000');
+        ctx.fillStyle = toColorPalette('#000000');
         ctx.fillRect(55, 95, 657, 30);
 
         ctx.font = 'bold 80px "Press Start 2P"';
 
         ctx.textAlign = 'left';
-        ctx.fillStyle = toNESColor('#f5e109');
+        ctx.fillStyle = toColorPalette('#f5e109');
         ctx.fillText('BUSINESS', 72, 157);
-        ctx.fillStyle = toNESColor('#f57b09');
+        ctx.fillStyle = toColorPalette('#f57b09');
         ctx.fillText('BUSINESS', 65, 150);
 
         ctx.textAlign = 'right';
-        ctx.fillStyle = toNESColor('#f5e109');
+        ctx.fillStyle = toColorPalette('#f5e109');
         ctx.fillText('BOB', canvas.width - 53, 257);
-        ctx.fillStyle = toNESColor('#f57b09');
+        ctx.fillStyle = toColorPalette('#f57b09');
         ctx.fillText('BOB', canvas.width - 60, 250);
 
         // Draw subtitle
-        ctx.fillStyle = toNESColor('#f57b09');
+        ctx.fillStyle = toColorPalette('#f57b09');
         ctx.font = '16px "Press Start 2P"';
         ctx.textAlign = 'left';
-        ctx.fillText('From Mop To Top', 65, 185);
-        ctx.fillStyle = toNESColor('#ffffff');
-        ctx.fillText('An adventure to the top', 65, 215);
-        ctx.fillText('of the corporate ladder!', 65, 245);
+        ctx.fillText('From Mop To Top', 70, 185);
+        ctx.fillStyle = toColorPalette('#ffffff');
+        ctx.fillText('An adventure to the top', 70, 215);
+        ctx.fillText('of the corporate ladder!', 70, 245);
 
         // Draw menu items (classic NES style - simple text list)
         ctx.textAlign = 'center';
@@ -153,7 +153,7 @@ export class MenuScene extends DefaultScene<MenuSceneState> {
 
             // Draw selection indicator (classic NES style)
             if (isHighlighted) {
-                ctx.fillStyle = toNESColor('#ffffff');
+                ctx.fillStyle = toColorPalette('#ffffff');
                 ctx.font = '16px';
                 ctx.textAlign = 'right';
 
@@ -166,7 +166,7 @@ export class MenuScene extends DefaultScene<MenuSceneState> {
             }
 
             // Draw menu text
-            ctx.fillStyle = toNESColor('#ffffff');
+            ctx.fillStyle = toColorPalette('#ffffff');
             ctx.font = '20px "Press Start 2P"';
             ctx.textAlign = 'left';
 
@@ -184,7 +184,7 @@ export class MenuScene extends DefaultScene<MenuSceneState> {
         });
 
         // Draw copyright text (classic NES style)
-        ctx.fillStyle = toNESColor('#ffffff');
+        ctx.fillStyle = toColorPalette('#ffffff');
         ctx.font = '12px "Press Start 2P"';
         ctx.textAlign = 'center';
         ctx.fillText('© 2025 BUSINESS BOB PRODUCTIONS', centerX, canvas.height - 60);

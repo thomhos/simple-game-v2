@@ -40,7 +40,7 @@ export const drawBackground = (
     color: string = '#ffffff'
 ): ((renderCtx: RenderContext) => RenderContext) => {
     return (renderCtx) => {
-        renderCtx.ctx.fillStyle = toNESColor(color);
+        renderCtx.ctx.fillStyle = toColorPalette(color);
         renderCtx.ctx.fillRect(0, 0, renderCtx.ctx.canvas.width, renderCtx.ctx.canvas.height);
         return renderCtx;
     };
@@ -133,9 +133,9 @@ export const quantizeColor = (color: string, palette: string[]): string => {
                 };
             } else if (hex.length === 6) {
                 return {
-                    r: parseInt(hex.substr(0, 2), 16),
-                    g: parseInt(hex.substr(2, 2), 16),
-                    b: parseInt(hex.substr(4, 2), 16),
+                    r: parseInt(hex.substring(0, 2), 16),
+                    g: parseInt(hex.substring(2, 4), 16),
+                    b: parseInt(hex.substring(4, 6), 16),
                     a: 1,
                 };
             }
@@ -205,7 +205,7 @@ export const quantizeColor = (color: string, palette: string[]): string => {
 
 // Predefined color palettes
 export const COLOR_PALETTES = {
-    gameboy: ['#0f380f', '#306230', '#8bac0f', '#9bbc0f'],
+    gb: ['#0f380f', '#306230', '#8bac0f', '#9bbc0f'],
     gbc: [
         '#000000',
         '#003300',
@@ -424,110 +424,10 @@ export const COLOR_PALETTES = {
         '#ffccff',
         '#ffffff',
     ],
-    nes: [
-        '#7C7C7C',
-        '#0000FC',
-        '#0000BC',
-        '#4428BC',
-        '#940084',
-        '#A80020',
-        '#A81000',
-        '#881400',
-        '#503000',
-        '#007800',
-        '#006800',
-        '#005800',
-        '#004058',
-        '#000000',
-        '#000000',
-        '#000000',
-        '#BCBCBC',
-        '#0078F8',
-        '#0058F8',
-        '#6844FC',
-        '#D800CC',
-        '#E40058',
-        '#F83800',
-        '#E45C10',
-        '#AC7C00',
-        '#00B800',
-        '#00A800',
-        '#00A844',
-        '#008888',
-        '#000000',
-        '#000000',
-        '#000000',
-        '#F8F8F8',
-        '#3CBCFC',
-        '#6888FC',
-        '#9878F8',
-        '#F878F8',
-        '#F85898',
-        '#F87858',
-        '#FCA044',
-        '#F8B800',
-        '#B8F818',
-        '#58D854',
-        '#58F898',
-        '#00E8D8',
-        '#787878',
-        '#000000',
-        '#000000',
-        '#FCFCFC',
-        '#A4E4FC',
-        '#B8B8F8',
-        '#D8B8F8',
-        '#F8B8F8',
-        '#F8A4C0',
-        '#F0D0B0',
-        '#FCE0A8',
-        '#F8D878',
-        '#D8F878',
-        '#B8F8B8',
-        '#B8F8D8',
-        '#00FCFC',
-        '#F8D8F8',
-        '#000000',
-        '#000000',
-    ],
-    cga: [
-        '#000000',
-        '#0000aa',
-        '#00aa00',
-        '#00aaaa',
-        '#aa0000',
-        '#aa00aa',
-        '#aa5500',
-        '#aaaaaa',
-        '#555555',
-        '#5555ff',
-        '#55ff55',
-        '#55ffff',
-        '#ff5555',
-        '#ff55ff',
-        '#ffff55',
-        '#ffffff',
-    ],
-    mono: ['#000000', '#333333', '#666666', '#999999', '#cccccc', '#ffffff'],
 };
 
 // Convenience function with default palette
-export const toGameBoyColor = (color: string): string => {
-    return quantizeColor(color, COLOR_PALETTES.gameboy);
-};
-
-export const toNESColor = (color: string): string => {
-    return quantizeColor(color, COLOR_PALETTES.nes);
-};
-
-export const toCGAColor = (color: string): string => {
-    return quantizeColor(color, COLOR_PALETTES.cga);
-};
-
-export const toMonoColor = (color: string): string => {
-    return quantizeColor(color, COLOR_PALETTES.mono);
-};
-
-export const toGBCColor = (color: string): string => {
-    return quantizeColor(color, COLOR_PALETTES.gbc);
+export const toColorPalette = (color: string, p: keyof typeof COLOR_PALETTES = 'gbc'): string => {
+    const palette = COLOR_PALETTES[p];
+    return quantizeColor(color, palette);
 };

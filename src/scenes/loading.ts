@@ -1,7 +1,7 @@
 import { RenderContext } from '../types';
 import { DefaultScene } from './default';
-import { loadAllAssets } from '../game/asset-loader';
-import { toNESColor } from '../utils';
+import { loadAllAssets } from '../utils/asset-loader';
+import { toColorPalette } from '../utils';
 
 export interface LoadingSceneState {
     assetsRequested: boolean;
@@ -80,7 +80,7 @@ export class LoadingScene extends DefaultScene<LoadingSceneState> {
         ctx.save();
         ctx.globalAlpha = opacity;
 
-        ctx.fillStyle = toNESColor('#ffffff');
+        ctx.fillStyle = toColorPalette('#ffffff');
         ctx.font = '16px "Press Start 2P"';
         ctx.textAlign = 'center';
         ctx.fillText('loading ...', ctx.canvas.width / 2, ctx.canvas.height / 2 - 20);
@@ -93,17 +93,17 @@ export class LoadingScene extends DefaultScene<LoadingSceneState> {
             const barY = ctx.canvas.height / 2;
 
             // Progress bar outline
-            ctx.strokeStyle = toNESColor('#ffffff');
+            ctx.strokeStyle = toColorPalette('#ffffff');
             ctx.lineWidth = 1;
             ctx.strokeRect(barX - 4, barY - 4, barWidth + 8, barHeight + 8);
 
             // Progress
             // ctx.fillStyle = '#4CAF50';
-            ctx.fillStyle = toNESColor('#ffffff');
+            ctx.fillStyle = toColorPalette('#ffffff');
             ctx.fillRect(barX, barY, barWidth * this.localState.progress, barHeight);
 
             // Text
-            ctx.fillStyle = toNESColor('#ffffff');
+            ctx.fillStyle = toColorPalette('#ffffff');
             ctx.font = '10px "Press Start 2P"';
             ctx.fillText(
                 `${Math.round(this.localState.progress * 100)}%`,

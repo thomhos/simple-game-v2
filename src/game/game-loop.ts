@@ -3,9 +3,9 @@ import { pipe, createRenderContext, clearCanvas, renderCRTEffects, drawBackgroun
 
 import { createEventEmitter } from './event-emitter';
 import { createSceneManager } from './scene-manager';
-import { createInitialState } from './create-initial-state';
+import { createInitialState } from './initial-state';
 import { createStore } from './store';
-import { gameReducer } from './game-reducer';
+import { gameReducer } from './store-reducer';
 
 export function createGame(input: InputSystem, ctx: CanvasRenderingContext2D) {
     const FIXED_TIMESTEP = 1000 / 60; // 16.67ms for 60fps

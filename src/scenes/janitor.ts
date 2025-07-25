@@ -1,8 +1,7 @@
 import { PickupEntity, PlayerAnimationNames, PlayerEntity, RenderContext, Vector2 } from '../types';
-import { DefaultScene } from './default';
-import { createMapManager } from '../game/map-manager';
-import { createEntityManager } from '../game/entity-manager';
+import { createMapManager, createEntityManager } from '../game/';
 import { drawMap, drawPlayer, drawPickup } from '../render';
+import { DefaultScene } from './default';
 
 interface JanitorSceneState {
     playerId?: string;
@@ -21,6 +20,7 @@ export class JanitorScene extends DefaultScene<JanitorSceneState> {
     entities = createEntityManager();
 
     localState: JanitorSceneState = {
+        playerId: undefined,
         timeRemaining: 60000, // 60 seconds
         totalPickups: 12,
         pickupsCollected: 0,
@@ -112,17 +112,8 @@ export class JanitorScene extends DefaultScene<JanitorSceneState> {
         if (this.localState.playerId) {
             this.updatePlayerMovement(this.localState.playerId);
             this.updatePlayerAnimation(this.localState.playerId);
+            this.updatePlayerCollisions(this.localState.playerId);
         }
-
-        // TODO: check for collisions with pickups and update them
-
-        // Check for collected pickups
-        // const pickups = this.localState.entityManager.getEntitiesByType('pickup');
-        // const collectedCount = this.localState.totalTrash - pickups.length;
-        // this.localState.trashCollected = collectedCount;
-
-        // Cleanup entities when they are done
-        // this.localState.entityManager.cleanup(currentTime);
 
         // Check win condition
         if (
@@ -130,10 +121,9 @@ export class JanitorScene extends DefaultScene<JanitorSceneState> {
             !this.localState.gameCompleted
         ) {
             this.localState.gameCompleted = true;
-            // Could trigger win screen or transition to next level
+            // Send action to global state about stage complete
         }
 
-        // Handle input for returning to menu
         if (state.input.keysPressed.includes('Escape')) {
             this.changeScene('stage-select');
         }
@@ -148,6 +138,7 @@ export class JanitorScene extends DefaultScene<JanitorSceneState> {
         this.entities.removeAll();
 
         // Reset game state
+        this.localState.playerId = undefined;
         this.localState.pickupsCollected = 0;
         this.localState.timeRemaining = 60000;
         this.localState.gameStarted = true;
@@ -246,15 +237,30 @@ export class JanitorScene extends DefaultScene<JanitorSceneState> {
             y: player.position.y + direction.y * moveSpeed,
         };
 
-        // TODO: Fix collision detection with walls
-        // check if new position is allowed
-        if (this.map.isPositionSolid(newPosition)) {
-            return;
-        }
-
         // update movement type
         const isMoving = direction.x !== 0 || direction.y !== 0;
         const movementType = isMoving ? 'walk' : 'idle';
+
+        // Check for collisions with solid tiles
+        const collisionPoints = [
+            { x: newPosition.x, y: newPosition.y },
+            { x: newPosition.x + player.collisionBox.width, y: newPosition.y },
+            { x: newPosition.x, y: newPosition.y + player.collisionBox.height },
+            {
+                x: newPosition.x + player.collisionBox.width,
+                y: newPosition.y + player.collisionBox.height,
+            },
+        ];
+
+        for (const point of collisionPoints) {
+            if (this.map.isPositionSolid(point)) {
+                this.entities.updateEntity(player.id, {
+                    facingDirection: newFacingDirection,
+                    movementType,
+                });
+                return;
+            }
+        }
 
         // Update player position
         this.entities.updateEntity(player.id, {
@@ -265,11 +271,25 @@ export class JanitorScene extends DefaultScene<JanitorSceneState> {
         });
     }
 
+    updatePlayerCollisions(playerId: string) {
+        const player = this.entities.getEntityById(playerId) as PlayerEntity;
+        const collisionsWithPlayer = this.entities.getCollisions(player);
+
+        if (collisionsWithPlayer.length > 0) {
+            for (const collision of collisionsWithPlayer) {
+                if (collision.type === 'pickup') {
+                    // Only collect if not already collected
+                    if (!collision.collected) {
+                        this.entities.updateEntity(collision.id, { collected: true });
+                        this.localState.pickupsCollected++;
+                    }
+                }
+            }
+        }
+    }
+
     render(renderContext: RenderContext) {
         super.render(renderContext);
-
-        if (!this.localState) return;
-
         const { ctx } = renderContext;
 
         // Calculate fade effect based on transition state
@@ -287,10 +307,12 @@ export class JanitorScene extends DefaultScene<JanitorSceneState> {
         drawMap(renderContext, this.map.getMapConfig());
 
         if (this.localState.totalPickups > 0) {
-            const allPickups = this.entities.getEntitiesByType('pickup');
+            const allPickups: PickupEntity[] = this.entities.getEntitiesByType('pickup');
 
             for (const pickup of allPickups) {
-                drawPickup(renderContext, pickup as PickupEntity);
+                if (!pickup.collected) {
+                    drawPickup(renderContext, pickup as PickupEntity);
+                }
             }
         }
 
@@ -314,26 +336,25 @@ export class JanitorScene extends DefaultScene<JanitorSceneState> {
 
         // Draw timer
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 24px Arial';
-        ctx.textAlign = 'center';
+        ctx.font = '14px "Press Start 2P"';
+        ctx.textAlign = 'left';
 
         const timeSeconds = Math.ceil(this.localState.timeRemaining / 1000);
         const timeColor = timeSeconds <= 10 ? '#ff4444' : '#ffffff';
         ctx.fillStyle = timeColor;
-        ctx.fillText(`Time: ${timeSeconds}s`, canvas.width / 2, 40);
+        ctx.fillText(`Time: ${timeSeconds}s`, 32, 24);
 
-        // Draw progress
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '18px Arial';
+        ctx.textAlign = 'right';
         ctx.fillText(
             `Trash Collected: ${this.localState.pickupsCollected}/${this.localState.totalPickups}`,
-            canvas.width / 2,
-            80
+            canvas.width - 32,
+            24
         );
 
         // Draw instructions
+        ctx.textAlign = 'center';
         ctx.fillStyle = '#cccccc';
-        ctx.font = '14px Arial';
+        ctx.font = '10px "Press Start 2P"';
         ctx.fillText('WASD/Arrow Keys to move', canvas.width / 2, canvas.height - 60);
         ctx.fillText(
             'Collect all trash before time runs out!',
@@ -350,24 +371,24 @@ export class JanitorScene extends DefaultScene<JanitorSceneState> {
 
             // Game over text
             ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 48px Arial';
+            ctx.font = 'bold 32px "Press Start 2P"';
             ctx.textAlign = 'center';
 
             if (this.localState.pickupsCollected >= this.localState.totalPickups) {
                 ctx.fillStyle = '#4CAF50';
                 ctx.fillText('LEVEL COMPLETE!', canvas.width / 2, canvas.height / 2 - 50);
                 ctx.fillStyle = '#ffffff';
-                ctx.font = '24px Arial';
+                ctx.font = '16px "Press Start 2P"';
                 ctx.fillText('Great job cleaning up!', canvas.width / 2, canvas.height / 2);
             } else {
                 ctx.fillStyle = '#f44336';
                 ctx.fillText('TIME UP!', canvas.width / 2, canvas.height / 2 - 50);
                 ctx.fillStyle = '#ffffff';
-                ctx.font = '24px Arial';
+                ctx.font = '16px "Press Start 2P"';
                 ctx.fillText('You ran out of time!', canvas.width / 2, canvas.height / 2);
             }
 
-            ctx.font = '18px Arial';
+            ctx.font = '12px "Press Start 2P"';
             ctx.fillText(
                 'Press R to restart, ESC for stage select',
                 canvas.width / 2,

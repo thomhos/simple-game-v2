@@ -7,6 +7,14 @@ export function drawMap({ ctx }: RenderContext, mapConfig: MapConfig) {
             const tile = mapConfig.layers.background[y][x];
 
             // Just drawing colored boxes for now
+            // ctx.strokeStyle = '#ffffff';
+            // ctx.lineWidth = 1;
+            // ctx.strokeRect(
+            //     x * mapConfig.tileWidth,
+            //     y * mapConfig.tileHeight,
+            //     mapConfig.tileWidth,
+            //     mapConfig.tileHeight
+            // );
             ctx.fillStyle = tile.color;
             ctx.fillRect(
                 x * mapConfig.tileWidth,

@@ -42,7 +42,7 @@ export interface AnimatedEntity extends BaseEntity {
 }
 
 // Specific entity types
-export type PlayerSkinNames = 'janitor';
+export type PlayerSkinNames = 'janitor' | 'reception';
 export type PlayerMovementTypes = 'idle' | 'walk';
 export type PlayerDirections = 'up' | 'down' | 'left' | 'right';
 export type PlayerAnimationNames = `${PlayerSkinNames}-${PlayerMovementTypes}-${PlayerDirections}`;

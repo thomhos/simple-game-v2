@@ -1,7 +1,6 @@
 import { RenderContext } from '../types';
 import { DefaultScene } from './default';
-import { loadAllAssets } from '../utils/asset-loader';
-import { toColorPalette } from '../utils';
+import { toColorPalette, loadAllAssets } from '../utils';
 
 export interface LoadingSceneState {
     assetsRequested: boolean;

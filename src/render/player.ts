@@ -32,7 +32,7 @@ export function drawPlayer({ ctx, state }: RenderContext, player: PlayerEntity) 
         frame.y,
         frame.width,
         frame.height, // Source rectangle
-        player.position.x + 8,
+        player.position.x,
         player.position.y,
         player.size.width,
         player.size.height // Destination rectangle

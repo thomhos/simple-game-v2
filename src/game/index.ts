@@ -1,11 +1,8 @@
-// export * from './ai-system';
-// export * from './entity-manager';
+export * from './entity-manager';
 export * from './event-emitter';
 export * from './game-loop';
 export * from './initial-state';
 export * from './map-manager';
-// export * from './movement-system';
-// export * from './projectile-system';
 export * from './scene-manager';
 export * from './store';
 export * from './store-reducer';

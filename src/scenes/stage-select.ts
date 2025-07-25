@@ -108,9 +108,6 @@ export class StageSelectScene extends DefaultScene<StageSelectSceneState> {
         const { canvas } = ctx;
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
-        const stageWidth = 300;
-        const stageHeight = 80;
-        const stageSpacing = 20;
 
         // Calculate fade effect based on transition state
         let opacity = 1;
@@ -161,7 +158,7 @@ export class StageSelectScene extends DefaultScene<StageSelectSceneState> {
                 const indicatorOpacity = isFlashingStage ? flashIntensity * opacity : opacity;
                 ctx.save();
                 ctx.globalAlpha = indicatorOpacity;
-                ctx.fillText('►', centerX - 120, itemY + 6);
+                ctx.fillText('►', centerX - 120, itemY + 3);
                 ctx.restore();
             }
 

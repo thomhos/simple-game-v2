@@ -4,7 +4,7 @@ export function drawPickup({ ctx, state }: RenderContext, pickup: PickupEntity) 
     if (pickup.collected) return;
 
     // Create pulsing effect
-    const pulseScale = 0.5 + 0.1 * Math.sin(state.gameTime * 0.005);
+    const pulseScale = 0.9 + 0.1 * Math.sin(state.gameTime * 0.005);
     const scaledSize = {
         x: pickup.size.width * pulseScale,
         y: pickup.size.height * pulseScale,

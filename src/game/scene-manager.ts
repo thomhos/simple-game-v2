@@ -1,13 +1,6 @@
 import { SceneManager, Scene, SceneNames, GameStore } from '../types';
 
-import {
-    LoadingScene,
-    MenuScene,
-    IntroScene,
-    JanitorScene,
-    StageSelectScene,
-    Stage2Scene,
-} from '../scenes';
+import { LoadingScene, MenuScene, JanitorScene, StageSelectScene, Stage2Scene } from '../scenes';
 
 type SceneMap = { [key in SceneNames]: Scene };
 
@@ -18,7 +11,6 @@ export function createSceneManager(store: GameStore): SceneManager {
     const scenes: SceneMap = {
         loading: new LoadingScene(store),
         menu: new MenuScene(store),
-        intro: new IntroScene(store),
         'stage-select': new StageSelectScene(store),
         janitor: new JanitorScene(store),
         reception: new Stage2Scene(store),

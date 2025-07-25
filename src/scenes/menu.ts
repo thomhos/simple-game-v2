@@ -69,7 +69,7 @@ export class MenuScene extends DefaultScene<MenuSceneState> {
                 const selectedItem =
                     this.localState!.menuItems[this.localState!.highlightedMenuItem];
                 if (selectedItem === 'start') {
-                    this.changeScene('intro');
+                    this.changeScene('stage-select');
                 } else if (selectedItem === 'continue') {
                     this.changeScene('stage-select');
                 }
@@ -108,23 +108,29 @@ export class MenuScene extends DefaultScene<MenuSceneState> {
             }
         }
 
-        // Draw main logo/title
-        ctx.fillStyle = toColorPalette('#ffffff');
-        ctx.fillRect(33, 105, 740, 180);
+        // Draw line around logo
+        ctx.lineWidth = 10;
+        ctx.strokeStyle = toColorPalette('#ffffff');
+        ctx.beginPath();
+        ctx.moveTo(55, 105);
+        ctx.lineTo(33, 105);
+        ctx.lineTo(33, 280);
+        ctx.lineTo(767, 280);
+        ctx.lineTo(767, 105);
+        ctx.lineTo(715, 105);
+        ctx.stroke();
 
-        ctx.fillStyle = toColorPalette('#000000');
-        ctx.fillRect(43, 115, 720, 160);
-        ctx.fillStyle = toColorPalette('#000000');
-        ctx.fillRect(55, 95, 657, 30);
-
+        // Build logo
         ctx.font = 'bold 80px "Press Start 2P"';
 
+        // Upper line
         ctx.textAlign = 'left';
         ctx.fillStyle = toColorPalette('#f5e109');
         ctx.fillText('BUSINESS', 72, 157);
         ctx.fillStyle = toColorPalette('#f57b09');
         ctx.fillText('BUSINESS', 65, 150);
 
+        // Lower line
         ctx.textAlign = 'right';
         ctx.fillStyle = toColorPalette('#f5e109');
         ctx.fillText('BOB', canvas.width - 53, 257);

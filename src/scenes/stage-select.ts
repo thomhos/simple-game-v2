@@ -1,5 +1,6 @@
 import { RenderContext, StageNames } from '../types';
 import { DefaultScene } from './default';
+import { toColorPalette } from '../utils';
 
 interface StageSelectSceneState {
     highlightedStage: number;
@@ -134,126 +135,74 @@ export class StageSelectScene extends DefaultScene<StageSelectSceneState> {
             }
         }
 
-        // Draw title
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 48px Arial';
+        // Draw title with retro styling
+        ctx.fillStyle = toColorPalette('#ffffff');
+        ctx.font = 'bold 40px "Press Start 2P"';
         ctx.textAlign = 'center';
-        ctx.fillText('Select Stage', centerX, centerY - 150);
+        ctx.fillText('SELECT STAGE', centerX, centerY - 120);
 
-        // Draw stage cards
+        // Draw stages as simple menu items (classic NES style)
+        const menuStartY = centerY - 40;
+        const lineHeight = 50;
+
         this.localState!.stages.forEach((stage, index) => {
-            const stageY = centerY - 50 + index * (stageHeight + stageSpacing);
+            const itemY = menuStartY + index * lineHeight;
             const isHighlighted = index === this.localState!.highlightedStage;
             const isFlashingStage =
                 this.localState!.isFlashing && index === this.localState!.highlightedStage;
 
-            // Calculate colors based on state
-            let bgColor = [51, 51, 51]; // Default gray
-            let borderColor = [102, 102, 102];
-            let textColor = '#cccccc';
+            // Draw selection indicator (classic NES style)
+            if (isHighlighted && stage.isUnlocked) {
+                ctx.fillStyle = toColorPalette('#ffffff');
+                ctx.font = '16px "Press Start 2P"';
+                ctx.textAlign = 'right';
 
-            if (stage.isUnlocked) {
-                if (isHighlighted) {
-                    bgColor = [76, 175, 80]; // Green for highlighted
-                    borderColor = [102, 187, 106];
-                    textColor = '#ffffff';
-                } else {
-                    bgColor = [68, 68, 68]; // Lighter gray for unlocked
-                    borderColor = [136, 136, 136];
-                    textColor = '#ffffff';
-                }
-            } else {
-                bgColor = [34, 34, 34]; // Darker for locked
-                borderColor = [68, 68, 68];
-                textColor = '#666666';
+                // Combine flash and transition opacity
+                const indicatorOpacity = isFlashingStage ? flashIntensity * opacity : opacity;
+                ctx.save();
+                ctx.globalAlpha = indicatorOpacity;
+                ctx.fillText('►', centerX - 120, itemY + 6);
+                ctx.restore();
             }
-
-            // Apply flash effect
-            if (isFlashingStage && stage.isUnlocked) {
-                const flashR = Math.floor(bgColor[0] + (255 - bgColor[0]) * flashIntensity);
-                const flashG = Math.floor(bgColor[1] + (255 - bgColor[1]) * flashIntensity);
-                const flashB = Math.floor(bgColor[2] + (255 - bgColor[2]) * flashIntensity);
-                bgColor = [flashR, flashG, flashB];
-
-                const borderFlashR = Math.floor(
-                    borderColor[0] + (255 - borderColor[0]) * flashIntensity
-                );
-                const borderFlashG = Math.floor(
-                    borderColor[1] + (255 - borderColor[1]) * flashIntensity
-                );
-                const borderFlashB = Math.floor(
-                    borderColor[2] + (255 - borderColor[2]) * flashIntensity
-                );
-                borderColor = [borderFlashR, borderFlashG, borderFlashB];
-            }
-
-            // Draw stage card background
-            ctx.fillStyle = `rgb(${bgColor[0]}, ${bgColor[1]}, ${bgColor[2]})`;
-            ctx.fillRect(
-                centerX - stageWidth / 2,
-                stageY - stageHeight / 2,
-                stageWidth,
-                stageHeight
-            );
-
-            // Draw stage card border
-            ctx.strokeStyle = `rgb(${borderColor[0]}, ${borderColor[1]}, ${borderColor[2]})`;
-            ctx.lineWidth = 2;
-            ctx.strokeRect(
-                centerX - stageWidth / 2,
-                stageY - stageHeight / 2,
-                stageWidth,
-                stageHeight
-            );
 
             // Draw stage title
-            ctx.fillStyle = textColor;
-            ctx.font = 'bold 24px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText(stage.title, centerX, stageY - 10);
+            let textColor = toColorPalette('#ffffff');
+            if (!stage.isUnlocked) {
+                textColor = toColorPalette('#666666');
+            }
 
-            // Draw stage description
-            ctx.fillStyle = stage.isUnlocked ? '#cccccc' : '#555555';
-            ctx.font = '14px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText(stage.description, centerX, stageY + 15);
+            ctx.fillStyle = textColor;
+            ctx.font = '20px "Press Start 2P"';
+            ctx.textAlign = 'left';
+
+            // Flash the text if selected
+            if (isFlashingStage && stage.isUnlocked) {
+                ctx.save();
+                ctx.globalAlpha = flashIntensity;
+            }
+
+            ctx.fillText(stage.title.toUpperCase(), centerX - 100, itemY + 8);
+
+            if (isFlashingStage && stage.isUnlocked) {
+                ctx.restore();
+            }
 
             // Draw lock indicator for locked stages
             if (!stage.isUnlocked) {
-                ctx.fillStyle = '#ff6b6b';
-                ctx.font = 'bold 16px Arial';
+                ctx.fillStyle = toColorPalette('#ff6b6b');
+                ctx.font = '16px "Press Start 2P"';
                 ctx.textAlign = 'right';
-                ctx.fillText('🔒', centerX + stageWidth / 2 - 15, stageY);
-            }
-
-            // Draw selection indicator
-            if (isHighlighted && stage.isUnlocked) {
-                ctx.fillStyle = '#4ecdc4';
-                ctx.font = 'bold 16px Arial';
-                ctx.textAlign = 'left';
-                ctx.fillText('▶', centerX - stageWidth / 2 - 25, stageY);
+                ctx.fillText('LOCKED', centerX + 120, itemY + 6);
             }
         });
 
-        // Draw progress/stats
-        const completedStages = this.localState!.stages.filter((stage) => stage.isUnlocked).length;
-        const totalStages = this.localState!.stages.length;
-
-        ctx.fillStyle = '#888888';
-        ctx.font = '18px Arial';
+        // Draw instructions in retro style
+        ctx.fillStyle = toColorPalette('#ffffff');
+        ctx.font = '12px "Press Start 2P"';
         ctx.textAlign = 'center';
-        ctx.fillText(`Stages Available: ${completedStages}/${totalStages}`, centerX, centerY + 120);
-
-        // Draw instructions
-        ctx.fillStyle = '#cccccc';
-        ctx.font = '16px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText(
-            'Use Arrow Keys/WASD to navigate, Enter/Space to select',
-            centerX,
-            canvas.height - 50
-        );
-        ctx.fillText('Press Escape to return to menu', centerX, canvas.height - 25);
+        ctx.fillText('USE ARROW KEYS TO SELECT', centerX, canvas.height - 80);
+        ctx.fillText('PRESS ENTER TO START STAGE', centerX, canvas.height - 60);
+        ctx.fillText('PRESS ESC TO RETURN TO MENU', centerX, canvas.height - 40);
 
         ctx.textAlign = 'left'; // Reset alignment
 

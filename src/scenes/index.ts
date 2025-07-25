@@ -1,4 +1,3 @@
-export * from './intro';
 export * from './janitor';
 export * from './loading';
 export * from './menu';

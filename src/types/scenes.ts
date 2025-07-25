@@ -18,7 +18,7 @@ export interface Scene {
 }
 
 // Simplified scene names for routing
-export type SceneNames = 'loading' | 'menu' | 'intro' | 'stage-select' | StageNames;
+export type SceneNames = 'loading' | 'menu' | 'stage-select' | StageNames;
 export type StageNames = 'janitor' | 'reception';
 
 // Menu scene specific state

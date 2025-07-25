@@ -17,8 +17,8 @@ export class LoadingScene extends DefaultScene<LoadingSceneState> {
     };
 
     async loadAssets() {
-        this.localState.assetsRequested = true;
         const state = this.store.getState();
+        this.localState.assetsRequested = true;
         // Start loading assets
         try {
             const assets = await loadAllAssets(state, (progress) => {
@@ -32,8 +32,9 @@ export class LoadingScene extends DefaultScene<LoadingSceneState> {
                 images: assets.images,
             });
 
+            // simulate longer loading time
             await new Promise((resolve) => {
-                setTimeout(resolve, 3000);
+                setTimeout(resolve, 100);
             });
 
             // Move to menu when done
@@ -47,19 +48,9 @@ export class LoadingScene extends DefaultScene<LoadingSceneState> {
         }
     }
 
-    update() {
-        super.update();
-        const state = this.store.getState();
-
+    onEnterComplete(): void {
         if (!this.localState?.assetsRequested) {
             this.loadAssets();
-        }
-
-        // Skip if in transition
-        if (this.transitionType !== 'none') return;
-
-        if (state.input.keysPressed.includes('1')) {
-            this.changeScene('menu');
         }
     }
 
@@ -85,34 +76,32 @@ export class LoadingScene extends DefaultScene<LoadingSceneState> {
         ctx.textAlign = 'center';
         ctx.fillText('loading ...', ctx.canvas.width / 2, ctx.canvas.height / 2 - 20);
 
-        // Draw progress bar if we have progress
-        if (this.localState.progress > 0) {
-            const barWidth = 250;
-            const barHeight = 10;
-            const barX = (ctx.canvas.width - barWidth) / 2;
-            const barY = ctx.canvas.height / 2;
+        // Loading bar
+        const barWidth = 250;
+        const barHeight = 10;
+        const barX = (ctx.canvas.width - barWidth) / 2;
+        const barY = ctx.canvas.height / 2;
 
-            // Progress bar outline
-            ctx.strokeStyle = toColorPalette('#ffffff');
-            ctx.lineWidth = 1;
-            ctx.strokeRect(barX - 4, barY - 4, barWidth + 8, barHeight + 8);
+        // Progress bar outline
+        ctx.strokeStyle = toColorPalette('#ffffff');
+        ctx.lineWidth = 1;
+        ctx.strokeRect(barX - 4, barY - 4, barWidth + 8, barHeight + 8);
 
-            // Progress
-            // ctx.fillStyle = '#4CAF50';
-            ctx.fillStyle = toColorPalette('#ffffff');
-            ctx.fillRect(barX, barY, barWidth * this.localState.progress, barHeight);
+        // Progress
+        // ctx.fillStyle = '#4CAF50';
+        ctx.fillStyle = toColorPalette('#ffffff');
+        ctx.fillRect(barX, barY, barWidth * this.localState.progress, barHeight);
 
-            // Text
-            ctx.fillStyle = toColorPalette('#ffffff');
-            ctx.font = '10px "Press Start 2P"';
-            ctx.fillText(
-                `${Math.round(this.localState.progress * 100)}%`,
-                ctx.canvas.width / 2,
-                barY + barHeight + 30
-            );
+        // Text
+        ctx.fillStyle = toColorPalette('#ffffff');
+        ctx.font = '10px "Press Start 2P"';
+        ctx.fillText(
+            `${Math.round(this.localState.progress * 100)}%`,
+            ctx.canvas.width / 2,
+            barY + barHeight + 30
+        );
 
-            ctx.textAlign = 'left'; // Reset alignment
-        }
+        ctx.textAlign = 'left'; // Reset alignment
 
         // Restore canvas state after fade effect
         renderContext.ctx.restore();

@@ -1,4 +1,4 @@
-import { PlayerSkinNames, PlayerMovementTypes, PlayerDirections } from './player';
+import { PlayerSkinNames, PlayerMovementTypes, PlayerDirections } from './entities';
 
 export interface AssetState {
     audio: AudioMap;
@@ -37,7 +37,7 @@ export interface SpriteFrame {
 }
 
 export interface Sprite {
-    readonly path: string; // used to look up in the map
+    readonly path: string; // used to look up in the image map
     // readonly width: number;
     // readonly height: number;
     readonly frames: SpriteFrame[];

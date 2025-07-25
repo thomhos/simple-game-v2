@@ -4,8 +4,8 @@ import {
     LoadingScene,
     MenuScene,
     IntroScene,
+    JanitorScene,
     StageSelectScene,
-    Stage1Scene,
     Stage2Scene,
 } from '../scenes';
 
@@ -20,7 +20,7 @@ export function createSceneManager(store: GameStore): SceneManager {
         menu: new MenuScene(store),
         intro: new IntroScene(store),
         'stage-select': new StageSelectScene(store),
-        janitor: new Stage1Scene(store),
+        janitor: new JanitorScene(store),
         reception: new Stage2Scene(store),
     };
 
